@@ -1,0 +1,23 @@
+# Ignore Python virtual environment folders
+venv/
+env/
+.venv/
+
+# Ignore dataset folder (can be large)
+datasets/
+
+# Ignore training logs
+*.log
+logs/
+
+# Ignore common Python cache files
+__pycache__/
+*.pyc
+
+# Ignore Jupyter notebook checkpoints
+.ipynb_checkpoints/
+
+# Ignore Docker-related files, if you want
+docker-compose.override.yml
+
+.env

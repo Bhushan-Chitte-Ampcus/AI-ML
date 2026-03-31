@@ -1,0 +1,378 @@
+# set
+
+sample_set = {1,2,3}
+print(f"sample set: {sample_set}")
+# ------------------------------------------------------------------------
+print("*"*50)
+
+# add(), update()
+sample_set.add(7)
+print(f"add() method: {sample_set}")
+
+sample_set.update({"a":1, "b":2})
+print(f"update() method: {sample_set}")
+
+# remove(), discard(), pop(), clear(), del
+sample_set.remove("a")
+print(f"remove() method: {sample_set}")
+
+sample_set.discard("a")
+print(f"discard() method: {sample_set}")
+
+sample_set.pop()
+print(f"pop() method: {sample_set}")
+
+sample_set.clear()
+print(f"clear() method: {sample_set}")
+
+try:
+    del sample_set
+    print(f"delete set: {sample_set}")
+except Exception as e:
+    print(e)
+
+# ------------------------------------------------------------------------
+print("*"*50)
+
+a = set([1,2,3])
+b = set((3,4,5))
+
+print(f"set a: {a}")
+print(f"set b: {b}")
+
+print(f"Union operation method 1: {a | b}")
+print(f"Union operation method 2: {a.union(b)}")
+
+# ------------------------------------------------------------------------
+print("*"*50)
+
+a = set([1,2,3])
+b = set([2,3,4,5])
+
+print(f"set a: {a}")
+print(f"set b: {b}")
+
+print(f"Intersection operation method 1: {a & b}")
+print(f"Intersection operation method 2: {a.intersection(b)}")
+
+# ------------------------------------------------------------------------
+print("*"*50)
+
+a = set([1,2,3,4])
+b = {3,4,5,6}
+
+print(f"set a: {a}")
+print(f"set b: {b}")
+
+print(f"Difference operation method 1: {a - b }")
+print(f"Difference operation method 2: {a.difference(b)}")
+
+# ------------------------------------------------------------------------
+print("*"*50)
+
+print("Set Comprehension: ")
+print({i**2 for i in range(6)})
+print({i**3 for i in range(6)})
+
+# ------------------------------------------------------------------------
+print("*"*50)
+print("*"*50)
+
+sample_dict = {
+    "name" : "bhushan",
+    "age" : 22,
+}
+
+print("Person Details: ")
+print(f'Name: {sample_dict["name"]}')
+print(f'Age: {sample_dict.get("age")}')
+
+sample_dict["state"] = "maharashtra"
+sample_dict["country"] = "india"
+print(sample_dict)
+
+# ------------------------------------------------------------------------
+print("*"*50)
+
+print("Remove elements from dictionary by using del keyword")
+del sample_dict["age"]
+print(sample_dict)
+
+print("\nRemove elements from dictionary by using pop() method")
+sample_dict.pop("state")
+print(sample_dict)
+
+print("\nRemove elements from dictionary by using popitem() method")
+sample_dict.popitem()
+print(sample_dict)
+
+print("\nRemove all elements from dictionary by using clear() method")
+sample_dict.clear()
+print(sample_dict)
+
+# ------------------------------------------------------------------------
+print("*"*50)
+
+dict_x = {  
+    "Name": "Sachin",   
+    "Age": 18,   
+    "Gender": "Male",   
+    "Profession": "Student",  
+    "Country": "India"  
+    }  
+
+for k,v in dict_x.items():
+    print(f"{k} -> {v}")
+
+# ------------------------------------------------------------------------
+print("*"*50)
+print("Python Functions: ")
+
+
+def welcome(name): # parameter
+    print(f"Welcome {name}")
+
+welcome("Jenny") # argument
+
+# ------------------------------------------------------------------------
+
+## Types of Python Function Arguments
+# Positional Arguments
+# Keyword Arguments
+# Default Arguments
+# Arbitrary Arguments (Variable-length arguments *args and **kwargs)
+# ------------------------------------------------------------------------
+
+# The Python bin() function is used to return the binary representation of a specified integer. A result always starts with the prefix 0b.
+
+# The Python bytes() in Python is used for returning a bytes object. It is an immutable version of the bytearray() function. It can create an empty bytes object of the specified size.
+
+string = "hello world"
+arr = bytes(string, "utf-8")
+print(arr)
+
+# A Python callable() function is a built-in function that checks and returns true if the object passed appears to be callable, otherwise false.
+
+x = 8
+print(callable(x))
+
+# The Python compile() function takes source code as input and returns a code object, which can later be executed by the exec() function.
+
+code_str = "x=5\ny=10\nprint(x+y)"
+code = compile(code_str, "sum.py", "exec")
+
+print(type(code))
+exec(code)
+
+# The Python exec() function is used for the dynamic execution of a Python program, which can either be a string or object code, and it accepts large blocks of code.
+
+x = 8
+exec("print(x+4)")
+
+# The Python ascii() function returns a string containing a printable representation of an object and escapes the non-ASCII characters in the string using \x, \u, or \U escapes.
+
+# The Python bytearray() returns a bytearray object and can convert objects into bytearray objects, or create an empty bytearray object of the specified size.
+
+string = "Python is a programming language."  
+  
+# string with encoding 'utf-8'  
+arr = bytearray(string, 'utf-8')  
+print(arr)  
+
+# The Python eval() function parses the expression passed to it and runs the Python expression(code) within the program.
+
+x = 8  
+print(eval('x + 1'))  
+
+# The Python getattr() function returns the value of a named attribute of an object. If it is not found, it returns the default value.
+
+class Details:
+    age = 22
+    name = "jenny"
+
+
+details = Details()
+print(getattr(details, "name"))
+print(details.name)
+
+# The Python globals() function returns the dictionary of the current global symbol table.
+
+age = 22  
+  
+globals()['age'] = 22  
+print('The age is:', age)  
+
+# The Python locals() method updates and returns the dictionary of the current local symbol table.
+
+def localsAbsent():
+    return locals()
+
+def localsPresent():
+    present = True
+    return locals()
+
+print(localsAbsent())
+print(localsPresent())
+
+# The Python map() function is used to return a list of results after applying a given function to each item of an iterable(list, tuple, etc.).
+
+def calculateAddition(n):
+    return n + n
+
+numbers = [1,2,3,4,5]
+print(list(map(calculateAddition, numbers)))
+
+# The Python memoryview() function returns a memoryview object of the given argument.
+
+#A random bytearray  
+randomByteArray = bytearray('ABC', 'utf-8')  
+  
+mv = memoryview(randomByteArray)  
+  
+# access the memory view's zeroth index  
+print(mv[0])  
+  
+# It create byte from memory view  
+print(bytes(mv[0:2]))  
+  
+# It create list from memory view  
+print(list(mv[0:3]))  
+
+# The Python object() returns an empty object. It is a base for all the classes and holds the built-in properties and methods that are default for all the classes.
+
+python = object()  
+  
+print(type(python))  
+print(dir(python))  
+
+# The Python open() function opens the file and returns a corresponding file object.
+
+# The Python chr() function is used to get a string representing a character that points to a Unicode code point.
+
+result = chr(102)
+print("chr(102): ", result)  
+
+# Python's complex() function is used to convert numbers or strings into a complex number. This method takes two optional parameters and returns a complex number. The first parameter is called the real part, and the second is the imaginary part.
+
+print(complex(1))
+
+# The Python delattr() function is used to delete an attribute from a class. It takes two parameters: the first is an object of the class, and the second is an attribute that we want to delete. After deleting the attribute, it is no longer available in the class and throws an error if you try to call it using the class object.
+
+class Student:
+    id = 101
+    name = "john"
+    email = "john@ampcustech.com"
+
+    def getInfo(self):
+        print(self.id, self.name, self.email)
+
+s = Student()
+s.getInfo()
+
+delattr(Student, "email")
+
+try:
+    s.getInfo()
+except AttributeError:
+    print("Attribute Deleted")
+
+# The Python divmod() function is used to get the remainder and quotient of two numbers. This function takes two numeric arguments and returns a tuple. Both arguments are required and numeric.
+
+result = divmod(10, 2)
+print(result)
+
+# The Python enumerate() function returns an enumerated object. It takes two parameters: the first is a sequence of elements, and the second is the start index of the sequence. We can get the elements in sequence either through a loop or the next() method.
+
+result = enumerate([1,2,3])
+print(list(result))
+
+# The Python hash() function is used to get the hash value of an object. Python calculates the hash value by using the hash algorithm. The hash values are integers and used to compare dictionary keys during a dictionary lookup.
+
+# Python's hex() function is used to generate the hex value of an integer argument. It takes an integer argument and returns an integer converted into a hexadecimal string. In case we want to get a hexadecimal value of a float, then use float.hex() function.
+
+# The Python setattr() function is used to set a value to the object's attribute. It takes three arguments, i.e., an object, a string, and an arbitrary value, and returns none. It is helpful when we want to add a new attribute to an object and set a value to it.
+
+class Student:
+    name = ""
+
+    def __init__(self, name):
+        self.name = name
+
+s = Student("jenny")
+print(s.name)
+
+try:
+    print(s.email)
+except Exception as e:
+    print(e)
+
+setattr(s, "email", "jenny@ampcustech.com")
+
+print(s.email)
+
+# In Python, the hasattr() function is a built-in function used to check whether an object has a specified attribute. It returns True if the attribute exists and False if it does not exist.
+
+class Car:
+    brand = "TATA"
+
+c = Car()
+print(hasattr(c, "brand"))
+print(hasattr(c, "year"))
+
+# The Python slice() function is used to get a slice of elements from a collection of elements. Python provides two overloaded slice functions. The first function takes a single argument, while the second function takes three arguments and returns a slice object. This slice object can be used to get a subsection of the collection.
+
+res = slice(5)
+res1 = slice(0, 5, 3)
+
+print(res)
+print(res1)
+
+# The Python isinstance() function is used to check whether the given object is an instance of that class. If the object belongs to the class, it returns true. Otherwise returns False. It also returns true if the class is a subclass.
+
+class Student:
+    def __init__(self, name):
+        self.name = name
+
+s = Student("jenny")
+print(isinstance(s, Student))
+
+# The Python oct() function is used to get the octal value of an integer number. This method takes an argument and returns an integer converted into an octal string. It throws an error, TypeError, if the argument type is other than an integer.
+
+# The Python ord() function returns an integer representing the Unicode code point for the given Unicode character.
+
+# The Python vars() function returns the __dict__ attribute of the given object.
+
+class Sample:
+    def __init__(self, x=7, y=9):
+        self.x = x
+        self.y = y
+
+obj = Sample()
+print(vars(obj))
+
+# ------------------------------------------------------------------------
+print("*"*50)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

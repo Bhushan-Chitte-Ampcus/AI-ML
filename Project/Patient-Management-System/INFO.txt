@@ -1,0 +1,75 @@
+# What is an API (Application Programming Interface)
+- APIs are mechanisms that enable two software components such as the frontend & backend of an application to communicate with each other using a defined set of rules, protocols and data formats.
+
+Database <- Backend <- API <- Frontend (make my trip /  yatra /  ixigo)
+Database <- Backend <- API <- Frontend (website / android / ios)
+
+# API - ML Perspective
+ML Model <- Backend <- API <- Frontend (website / android / ios)
+
+# FastAPI
+- FastAPI is a modern, high-performance web framework for building APIs with Python.
+- libraries used starlette & pydantic
+- starlette manages how your API receives requests and sends back responses.
+- pydantic is used to check if the data coming into your API is correct and in the right format.
+
+# Philosophy of FastAPI
+- Fast to run
+- Fast to code
+
+# Why FastAPI is Fast to run?
+web server (http) -> ASGI (asynchronous server gateway interface) (http to json or json to http) -> API Code (json)
+
+# Why FastAPI is Fast to code?
+- Automatic input validation.
+- Auto-generated interactive documentation.
+- Seamless integration with modern ecosystem(ML/DL libraries, OAuth, JWT, SQL ALchemy, Docker, Kubernetes).
+
+# Path Params
+- Path parameters are dynamic segments of a URL path used to identify a specific resource.
+
+# Path() - 
+- The Path() function in FastAPI is used to provide metadata, validation rules, and documentation hints for path parameters in your API endpoints.
+Such as title, description, example, ge, gt, le, lt, min_length, max_length, regex.
+
+# HTTP Status Code - 
+HTTP Status code are 3-digit numbers returned by a web server to indicate the result of a client request.
+2xx - success
+3xx - redirection
+4xx - client error
+5xx - server error
+
+# HTTPException - 
+HTTPException is a special built-in exception in FastAPI used to return custom HTTP error responses when something goes wrong in your API. Instead of returning normal json or crashing the server, you can gracefully raise an error with:
+- a proper HTTP status code
+- a custom error message
+- extra headers
+
+# Query Parameter - 
+Query parameters are optional key-value pairs appended to the end of URL, used to pass additional data to the server in an HTTP request. They are typically employed for operations like filtering, sorting, searching and pagination, without altering the endpoint path itself.
+
+# Query() - 
+Query() is a utility function provided by FastAPI to declare, validate and document query parameters in API endpoints.
+It allows to:
+- set default values
+- enforce validation rules
+- add metadata like description, title, examples
+
+# Pydantic : 
+- Pydantic is a popular Python library for data validation and settings management, using Python type hints to enforce data types at runtime. It ensures data structures (like API inputs) are correct before processing, providing clear errors and automatic type conversion, which is essential for building robust FastAPI applications.
+
+# Python not support type validation.
+# Python not support data validation.
+
+1. Define a pydantic model that represents the ideal schema of the data.
+This includes the expected fields, their types and any validation constraints. (e.g. gt=0)
+
+2. Instantiate the model with raw input data (usually a dictionary or JSON like structure)
+pydantic will automatically validate the data and coerce it into the correct python types.
+if the data doesn't meet the model requirements, pydantic raise a ValidationError.
+
+3. Pass the validated model object to functions or use it throughout your codebase.
+This ensures that every part of your program works with clean, type-safe and logically valid data.
+
+### A request body is the portion of an HTTP request that contains data sent by the client to the server. it is typically used in HTTP methods such as POST or PUT to transmit structured data (e.g. json) for the purpose of creating or updating resources on the server. The server parses the request body to extract the necessary information and perform the intended operation.
+
