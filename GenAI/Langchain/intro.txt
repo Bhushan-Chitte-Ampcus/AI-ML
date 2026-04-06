@@ -1,0 +1,93 @@
+# What is GenAI
+- Generative AI is a type of artificial intelligence that creates new content such as text, images, music or code by learning patterns from existing data, mimicking human creativity.
+- AI <- ML <- DL <- GenAI
+
+# GenAI Impact Areas
+- Customer Support
+- Content Creation
+- Education
+- Software Development
+
+# Foundation Models (LLM, LMS)
+- A foundation model is a large-scale AI model trained on vast, typically unlabeled, data sets using self-supervision, designed to be adapted (fine-tuned) for a wide range of downstream tasks.
+
+# foundation models
+	# user perspective (prompt engg, RAG, AI Agents, vector databases, fine tuning).
+	# builder perspective (reinforcement learning with help of human feedback, pretraining, quantization, fine tuning).
+	
+### Langchain
+
+# what is langchain
+- Langchain is an open source framework that helps in building LLM based applications. it provides modular components and end-to-end tools that help developers build complex AI applications, such as chatbots, question-answering systems, retrieval-augmented-generation, autonomous agents and more.
+
+# features
+- support all the major LLMs.
+- simplifies developing LLM based applications.
+- integrations available for all major tools.
+- open source/free/actively developed.
+- supports all major GenAI use cases.
+
+# Langchain Roadmap
+
+1. Fundamentals
+- what is langchain
+- langchain components
+- models
+- prompts
+- parsing output
+- runnables & LCEL
+- chains
+- memory
+
+2. RAG
+- document loaders
+- text splitters 
+- embeddings
+- vector stores
+- retrieves
+- building a RAG applications
+
+3. Agents
+- tools & toolkits
+- tool calling
+- building an AI agents
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
