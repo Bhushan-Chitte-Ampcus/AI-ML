@@ -1,20 +1,27 @@
 # What is GenAI
 - Generative AI is a type of artificial intelligence that creates new content such as text, images, music or code by learning patterns from existing data, mimicking human creativity.
+
 - AI <- ML <- DL <- GenAI
 
+
 # GenAI Impact Areas
+
 - Customer Support
 - Content Creation
 - Education
 - Software Development
 
+
 # Foundation Models (LLM, LMS)
 - A foundation model is a large-scale AI model trained on vast, typically unlabeled, data sets using self-supervision, designed to be adapted (fine-tuned) for a wide range of downstream tasks.
 
+
 # foundation models
-	# user perspective (prompt engg, RAG, AI Agents, vector databases, fine tuning).
-	# builder perspective (reinforcement learning with help of human feedback, pretraining, quantization, fine tuning).
-	
+
+- user perspective (prompt engg, RAG, AI Agents, vector databases, fine tuning).
+- builder perspective (reinforcement learning with help of human feedback, pretraining, quantization, fine tuning).
+
+
 ### Langchain
 
 # what is langchain
@@ -27,6 +34,7 @@
 - open source/free/actively developed.
 - supports all major GenAI use cases.
 
+
 # Langchain Roadmap
 
 1. Fundamentals
@@ -35,7 +43,7 @@
 - models
 - prompts
 - parsing output
-- runnables & LCEL
+- runnables \& LCEL
 - chains
 - memory
 
@@ -51,6 +59,152 @@
 - tools & toolkits
 - tool calling
 - building an AI agents
+
+
+# Benefits
+* concept of chains
+* model agnostic development
+* complete ecosystem
+* memory and state handling
+
+
+# what can we build?
+* conversational chatbots
+* AI Knowledge assistants
+* AI Agents
+* workflow automation
+* summarization/research helpers
+
+## Langchain Components
+
+* Models
+- models are core interfaces through which you can interact with AI models.
+- natural language understanding \& context aware text generation.
+- by using langchain we can communicate with two types of models ***language \& embedding.***
+
+* Prompts
+- input given to the large language models.
+- dynamic \& reusable prompts
+- role based prompts
+- few shot prompting 
+
+* Chains
+- a structured sequence of modular components such as prompts, language models and external tools-linked together to automate complex, multi step workflows.
+- parallel chains
+- condition based chains 
+
+* Memory
+- LLM API calls are stateless.
+- ConversationBufferMemory: stores a transcript of recent messages. great for short chats but can grow large quickly.
+- ConversationBufferWindowMemory: only keeps the last N interactions to avoid excessive token usage.
+- Summarizer-Based Memory: periodically summarizes older chat segments to keep a condensed memory footprint.
+- Custom Memory: for advanced use cases, we can store specialized state in a custom memory class.
+
+* Indexes
+- Indexes connect your application to external knowledge such as PDF, website or databases.
+- This is a combination of Doc loader, Text splitter, Vector store, Retrievals.
+
+* Agents
+- An Agent is a system that uses a large language model as a reasoning engine to determine which actions to take and in what order. 
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# What are Models?
+- The model component in langchain is a crucial part of the framework, designed to facilitate interactions with various `language models` and `embedding models`.
+- It abstracts the complexity of working directly with different LLMs, chat models amd embedding models, providing a uniform interface to communicate with them. This makes it easier to build applications that rely on AI-generated text, text embeddings for similarity search, and retrieval-augmented generation.
+
+# language models
+    - closed source 
+        - openai
+        - gemini
+        - claude
+    - open source
+        - huggingface
+
+# embedding models
+    - closed source
+        - openai
+    - open source
+        - huggingface
+
+
+## Language Models
+- language models are AI systems designed to process, generate and understand natural language text.
+
+- Types of language models 
+    - LLMs (general purpose tasks)
+    - chat models (conversation tasks)
+
+### LLMs
+- General purpose models that is used for raw text generation. They take a string or plain text as input and returns a string. These are traditionally older models and are not used much more.
+
+### Chat Models
+- Language models that are specialized for conversational tasks. They take a sequence of messages as inputs and returns chat messages as outputs. These are traditionally newer models and used more in comparison to LLMs.
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# Setup
+-  create a new folder
+- open it in vs code
+- create a new virtual environment
+    python -m venv venv
+- activate virtual environment
+    venv\Scripts\activate
+- create requirements.txt
+- install packages from requirements.txt
+    pip install -r requirements.txt
+- verify langchain installations.
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# Temperature
+- Temperature is a parameter that controls the randomness of a language model output. it affects how creative or deterministic the response are.
+- lower values (0.0 to 0.3) -> more deterministic and predictable.
+- higher values (0.7 to 1.5) -> more random, creative & diverse.
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# Open Source Models
+- Open source language models are freely available AI models that can be downloaded, modified, fine-tuned and deployed without restrictions from central provider.
+
+# HuggingFace - The largest repository of open-source LLMs.
+
+# Ways to use Open-Source Models
+- using huggingface inference API
+- running locally
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
