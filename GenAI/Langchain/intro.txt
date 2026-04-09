@@ -43,7 +43,7 @@
 - models
 - prompts
 - parsing output
-- runnables \& LCEL
+- runnables & LCEL
 - chains
 - memory
 

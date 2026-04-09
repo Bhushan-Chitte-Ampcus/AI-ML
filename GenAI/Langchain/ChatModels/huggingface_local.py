@@ -1,7 +1,15 @@
 from langchain_huggingface import ChatHuggingFace, HuggingFacePipeline
 import os
+import transformers
+from dotenv import load_dotenv
+
+load_dotenv()
+
+transformers.logging.set_verbosity_error()
+
 
 os.environ["HF_HOME"] = "D:/huggingface_cache"
+os.environ["HF_TOKEN"] = os.getenv("HF_TOKEN")
 
 llm = HuggingFacePipeline.from_model_id(
     model_id = "TinyLlama/TinyLlama-1.1B-Chat-v1.0",
