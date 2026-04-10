@@ -110,6 +110,8 @@
 
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Models
+
 # What are Models?
 - The model component in langchain is a crucial part of the framework, designed to facilitate interactions with various `language models` and `embedding models`.
 - It abstracts the complexity of working directly with different LLMs, chat models amd embedding models, providing a uniform interface to communicate with them. This makes it easier to build applications that rely on AI-generated text, text embeddings for similarity search, and retrieval-augmented generation.
@@ -176,13 +178,78 @@
 
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Prompts
+
+# What are prompts?
+- Prompts are the input instructions or queries given to a model to guide its output.
+
+# Types of Prompts:
+    - static
+    - dynamic
+
+# Static:
+- A static prompt is a fixed prompt where the text remains constant every time the model is called.
+    - No variables or placeholders are used.
+    - The same instruction is sent to the LLM for every request.
+    - Useful for simple tasks where the prompt never changes.
+
+# Dynamic:
+- A dynamic prompt contains variables/placeholders that get replaced with user input or runtime data.
+    - Prompt structure stays the same.
+    - Some values change dynamically.
+    - Useful for chatbots, Q&A systems, RAG pipelines.
 
 
 
+## PromptTemplate:
+- A PromptTemplate in langchain is a structured way to create prompts dynamically by inserting variables into a predefined template. Instead of hardcoding prompts, PromptTemplate allows you to define placeholders that can be filled in at runtime with different inputs.
+This makes it reusable, flexible and easy to manage, especially when working with dynamic user inputs or automated workflows.
+
+## ChatPromptTemplate
+- ChatPromptTemplate is a LangChain component used to structure prompts for chat-based LLMs by organizing messages with specific roles (system, human, AI). It enables multi-turn conversation management, allowing developers to define system instructions, user queries, and previous AI responses for context-aware interactions.
 
 
+# Why use PromptTemplate over f-strings
+- default validation
+- reusable
+- langchain ecosystem
 
+## Messages:
+- system
+- human
+- AI
 
+## Message Placeholder:
+- A MessagePlaceHolder in langchain is a special placeholder used inside a ChatPromptTemplate to dynamically insert chat history or list of messages at runtime.
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+## Structured Output:
+- In LangChain, structured output refers to the practice of having language models return responses in a well-defined data format rather than free form text. This makes the model output easier to parse and work with programmatically.
+
+# why do we need structured output
+- Data Extraction
+- API building
+- Agents
+
+# ways to get structured output:
+- from LLMs which give by default structured output. (with_structured_output)
+- from LLMs which can't give structured output. (output parsers)
+
+# with_structured_output
+    - TypedDict
+    - Pydantic
+    - json_schema
+
+# TypedDict
+- TypedDict is a way to define a dictionary in python where you specify what keys and values should exist. it helps ensure that your dictionary follows a specific structure.
+- it tells python what keys are required and what types of values they should have.
+- it does not validate data at runtime.
+
+# Pydantic
+- Pydantic is a data validation and data parsing library for python. it ensures that the data you work with is correct, structured and type-safe.
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 
