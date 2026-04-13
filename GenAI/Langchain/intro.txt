@@ -249,17 +249,57 @@ This makes it reusable, flexible and easy to manage, especially when working wit
 # Pydantic
 - Pydantic is a data validation and data parsing library for python. it ensures that the data you work with is correct, structured and type-safe.
 
+### When to use What?
+
+# TypedDict
+- only need type hints
+- don't need validation
+- trust on LLM to return correct data
+
+# Pydantic
+- need data validation
+- need default values if LLM misses fields
+- want automatic type conversion
+
+# json
+- don't want to import extra python libraries (Pydantic)
+- need validation but don't need python objects
+- want to define structure in a standard JSON format
+
+# with_structured_output method
+- json mode (claude, gemini)
+- function calling (OpenAI)
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+### Output Parsers:
+- Output Parsers in langchain help convert raw LLM responses into structured formats like JSON, CSV, Pydantic models and more. They ensure consistency, validation and ease of use in applications.
+
+### Types of Output Parsers:
+- StrOutputParser
+- JSONOutputParser
+- StructuredOutputParser
+- PydanticOutputParser
+
+# StrOutputParser
+- The StrOutputParser is the simplest output parser in Langchain. It is used to parse the output of a Language Model (LLM) and return it as a plain string.
+
+# JSONOutputParser
+- JsonOutputParser() (from LangChain) is used to convert LLM output into structured JSON format instead of plain text.
+
+# StructuredOutputParser
+- StructuredOutputParser is an output parser in langchain that helps extract structured JSON data from LLM responses based on predefined field schemas.
+- it works by defining a list of fields (ResponseSchema) that the model should return, ensuring the output follows a structured format.
+
+
+# PydanticOutputParser
+- PydanticOutputParser is a structured output parser in langchain that uses Pydantic models to enforce schema validation when processing LLM responses.
+
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 
-
-
-
-
-
-
-
+ 
 
 
 
