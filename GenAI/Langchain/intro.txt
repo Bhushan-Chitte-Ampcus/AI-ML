@@ -3,7 +3,6 @@
 
 - AI <- ML <- DL <- GenAI
 
-
 # GenAI Impact Areas
 
 - Customer Support
@@ -297,12 +296,84 @@ This makes it reusable, flexible and easy to manage, especially when working wit
 
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Chains:
+- A chain in LangChain is a structured sequence of components—such as prompts, language models (LLMs), and output parsers—linked together to automate complex, multi-step workflows. It allows the output of one step to serve as the input for the next, facilitating tasks like data retrieval, transformation, and reasoning.
 
+# simple chain
+- A simple chain connects a single prompt template, an LLM, and an optional output parser. It is used for straightforward tasks where you send an input, the LLM processes it, and you get one output.
 
+# sequential chain
+- Sequential chains link multiple simple chains together in a linear fashion. The output of one step is automatically fed as input to the next, making it ideal for multi-stage tasks.
+
+# parallel chain
+- Parallel chains run multiple, independent chains at the same time to increase efficiency. This is useful when the same input needs to be processed in different ways concurrently, with the results combined later.
+
+# conditional chain
+- Conditional chains add logic ("if-then" scenarios) to decide which path the workflow should take. They dynamically route user inputs to the most appropriate specialized sub-chain based on the content of the request.
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+### Runnables:
+- Runnables were introduced to standardize how different components of an AI pipeline interact.
+- Runnables are abstractions that represent any unit of work in an AI pipeline.
+    They:
+    - Take an input
+    - Process it
+    - Return an output
+
+Before runnables:
+- Every component (LLM, prompt, retriever, tool) had different interfaces
+- You had to manually glue everything together
+- Hard to debug, reuse, or scale workflows
+
+Runnables solve this by:
+- Providing a common interface (invoke, batch, stream)
+- Making components composable like building blocks
+- Allowing pipelines to be clean, reusable, and testable
+
+# Problems
+- Inconsistent interfaces
+- Complex pipelines
+- Hard to debug
+- No reusability
+- Poor Streaming & Async support
  
+# Benefits
+- Composability
+- Standardization
+- Reusability
+- Debugging & Observability
+- Streaming & Async Support
+
+### Types of Runnables:
+- Task Specific Runnables
+- Runnables Primitives
+
+# Task Specific Runnables:
+- These are core langchain components that have been converted into runnables so they can be used in pipeline.
+- purpose: perform task-specific operations like LLM calls, prompting, retrieval
+- ChatOpenAI(), PromptTemplate(), Retriever()
+
+# Runnables Primitives:
+- These are fundamental building blocks for structuring execution logic in AI workflows.
+- purpose: They help orchestrate execution by defining how different runnables interact
+- RunnableSequence(), RunnableParallel(), RunnableMap(), RunnableBranch(), RunnableLambda(), RunnablePassthrough()
 
 
+## Available Runnable Primitives:
 
+# RunnableSequence():
+- RunnableSequence is a sequential chain of runnables in langchain that executes each step one after another, passing the output of one step as the input to the next.
+- It is useful when you need to compose multiple runnables together in a structured workflow.
+
+# RunnableParallel():
+- RunnableParallel is a runnable primitives that allows multiple runnables to executes in parallel.
+- Each runnable receives the same input and processes it independently, producing a dictionary of outputs.
+
+# RunnablePassthrough():
+- RunnablePassthrough is a special Runnable primitive that simply returns the input as a output without modifying it.
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 
