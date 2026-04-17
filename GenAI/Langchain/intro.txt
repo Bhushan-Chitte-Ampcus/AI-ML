@@ -373,6 +373,17 @@ Runnables solve this by:
 # RunnablePassthrough():
 - RunnablePassthrough is a special Runnable primitive that simply returns the input as a output without modifying it.
 
+# RunnableLambda():
+- RunnableLambda is a runnable primitive that allows you to apply custom python functions within an AI pipeline.
+- It acts as a middleware between different AI components, enabling preprocessing, transformation, API calls, filtering and post-processing in langchain workflow.
+
+# RunnableBranch():
+- RunnableBranch is a control flow component in langchain that allows you to conditionally route input data to different chains or runnables based on custom logic.
+- it functions like an if/elif/else block for chains - where you define a set of condition functions, each associated with a runnable. The first matching condition is executed. if no condition matches, a default runnable is used.
+
+# LCEL (langchain expression language):
+- LangChain Expression Language (LCEL) is a declarative, composable language for creating complex AI chains in LangChain, using the pipe operator (|) to pass output from one component to the next. It simplifies building pipelines by providing automatic streaming, asynchronous support, parallel execution, and seamless integration with LangSmith for debugging. 
+
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
