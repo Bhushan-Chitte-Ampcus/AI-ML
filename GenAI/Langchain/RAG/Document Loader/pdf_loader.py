@@ -1,9 +1,19 @@
+# from langchain_community.document_loaders import PyPDFLoader
+
+# loader = PyPDFLoader("./documents/dl-curriculum.pdf")
+# docs = loader.load()
+
+# # print(docs)
+# print(len(docs))
+# print(docs[0].page_content)
+# print(docs[0].metadata)
+
+# ---------------------------------------------------------------
+
 from langchain_community.document_loaders import PyPDFLoader
 
 loader = PyPDFLoader("./documents/dl-curriculum.pdf")
-docs = loader.load()
+docs = loader.lazy_load()
 
-# print(docs)
-print(len(docs))
-print(docs[0].page_content)
-print(docs[0].metadata)
+for document in docs:
+    print(document.metadata)

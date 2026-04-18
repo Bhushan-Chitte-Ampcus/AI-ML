@@ -420,19 +420,13 @@ Runnables solve this by:
 - PyPDFLoader is a document loader in langchain used to load content from PDF files and convert each page into a Document object.
 - It uses the PyPDF library under the hood - not great with scanned PDFs or complex layouts.
 
-# DirectoryLoader
+# DirectoryLoader:
 - DirectoryLoader is a document loader that lets you load multiple documents from a directory or files.
 
+# WebBaseLoader:
+- WebBaseLoader is a document loader in langchain used to load and extract text content from web pages.
 
-
-
-
-
-
-
-
-
-
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 
