@@ -426,13 +426,208 @@ Runnables solve this by:
 # WebBaseLoader:
 - WebBaseLoader is a document loader in langchain used to load and extract text content from web pages.
 
+# CSVLoader:
+- CSVLoader is a document loader used to load CSV files into langchain document objects.
+
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+# Text Splitting:
+- Text Splitting is the process of breaking large chunks of text into smaller, manageable pieces that an LLM can handle effectively.
 
+### Why Text Splitting:
 
+# Overcoming model limitation:
+- Many embedding models and language models have maximum input size constraints. Splitting allows us to process documents that would otherwise exceed these limits.
 
+# Downstream tasks:
+- Text splitting improves nearly every LLM powered task.
+- Embedding : Short chunks yield more accurate vectors
+- Semantic Search : Search results point to focused info, not noise
+- Summarization : Prevents hallucination and topic drift
 
+# Optimizing computational resources:
+- Working with smaller chunks of text can be more memory-efficient and allow for better parallelization of processing tasks.
 
+### Types of Text Splitters:
+
+- Length based: These split text purely based on size (number of characters or tokens). Useful when you need fixed-size chunks for models with input limits.
+
+- Text structure based (paragraph, sentence, word, character): These follow natural language structure like paragraphs, sentences, words, or characters. Helps keep the text readable and logically grouped.
+
+- Document structure based:These use document formatting like headings, sections, bullet points, or chapters. Best for structured documents like PDFs, reports, or HTML pages. 
+
+- Semantic Meaning based: These split text based on meaning or context using embeddings or NLP techniques. Ensures each chunk contains related ideas, improving search and retrieval quality.
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# Vector Stores:
+
+# What are vector stores:
+- A vector store is a system designed to store and retrieve data represented as numerical vectors.
+
+# Key Features:
+
+- Storage: Ensures that vectors and their associated metadata are retained, whether in-memory for quick lookups or on-disk for durability and large scale use.
+
+- Similarity Search: Help retrieve the vectors most similar to a query vector.
+
+- Indexing: Provides a data structure or method that enables fast similarity searches on high-dimensional vectors. (e.g. approximate nearest neighbor lookups)
+
+- CRUD operation: Manage the lifecycle of data - adding new vectors, reading them, updating existing entries, removing outdated vectors.
+
+# Use-cases:
+- Semantic search
+- RAG
+- Recommender system
+- Image/Multimedia search
+
+### Difference between Vector Store and Vector Database:
+
+# Vector Store:
+- Typically refers to a lightweight library or service that focuses on storing vectors (embedding) and performing similarity search.
+- May not include many traditional database features like transactions, rich query languages or role-based access control.
+- Ideal for prototyping, small-scale applications.
+- E.g. FAISS (where we store vectors and can query them by similarity, but handle persistance and scaling separately).
+
+# Vector Database:
+- A full-fledged database system designed to store and query vectors.
+- Offers additional "database-like" features:
+    - Distributed architecture for horizontal scaling.
+    - Durability and persistance 
+    - Metadata handling
+    - Potential for ACID or near ACID guarantees
+    - Authentication/Authorization and more advanced security
+- Geared for production environments with significant scaling, large datasets.
+- E.g. Milvus, Qdrant, Weaviate.
+
+### Vector Stores in LangChain:
+
+- Supported Stores: LangChain integrates with multiple vector stores (FAISS, Pincone, Chroma, Qdrant, Weaviate) giving flexibility in scale, features and development.
+- Common Interface: A uniform vector store API lets you swap out one backend for another with minimal code changes.
+- Metadata Handling: Most Vector stores in langchain allow you to attach metadata to each document, enabling filter-based retrieval.
+
+# Chroma Vector Store:
+- Chroma is a lightweight, open-source vector database that is especially friendly for local developement and small-to-medium-scale production needs.
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+### What are Retrievers:
+- A retriever is a component in LangChain that fetches relevant documents from a data source in response to a user query.
+- There are multiple types of retrievers.
+- All retrievers in LangChain are Runnables.
+
+# Types of Retrievers:
+- Retrievers based on Data Source
+- Retrievers based on Search Strategy
+
+# Wikipedia Retriever:
+- A Wikipedia Retriever is a retriever that queries the wikipedia API to fetch relevant content for a given query.
+
+# Vector Store Retriever:
+- A vector store retriever in langchain is the most common type of retriever that lets you search and fetch documents from a vector store based on semantic similarity using vector embeddings.
+
+# Maximal Marginal Relevance (MMR):
+- How can we pick results that are not only relevant to the query but also different from each other.
+- MMR is an information retrieval algorithm designed to reduce redundancy in the retrieved results while maintaining high relevance to the query.
+
+    - MMR Retriever avoids that by:
+        - picking the most relevant document first
+        - then picking the next most relevant and least similar to already selected docs 
+        - and so on...
+
+# Multi-Query Retriever:
+- Sometimes a single query might not capture all the ways information is phrased in your documents.
+    - How MQR:
+        - Takes original query.
+        - Uses an LLM to generate multiple semantically different versions of that query.
+        - Performs retrieval for each sub-query.
+        - Combines and de-duplicates the results.
+
+# Contextual Compression Retriever:
+- The Contextual Compression Retriever in langchain is an advanced retriever that improves retrieval quality by compressing documents after retrieval - keeping only the relevant content based on the user query.
+    - How CCR:
+        - Base retriever retrieves N documents.
+        - A compressor (usually an LLM) is applied to each document.
+        - The compressor keeps only the parts relevant to the query.
+        - Irrelevant content is discarded.
+
+    - When to use:
+        - Documents are long and contain mixed information.
+        - Want to reduce context length for LLMs.
+        - Need to improve answer accuracy in RAG pipelines.
+
+# More Retrievers:
+- BM25Retriever
+- ParentDocumentRetriever
+- SelfQueryRetriever
+- TimeWeightedVectorRetriever
+- MultiVectorRetriever
+- EnsembleRetriever
+- ArxicRetriever
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# RAG:
+
+    Query / Prompt --> LLM --> Response
+
+# When to use RAG
+- private data
+- recent data
+- hallucination
+
+# Fine-tuning
+- supervised fine-tuning (prompt --> desired output)
+- unsupervised fine-tuning / continued pretraining (transcript)
+- RLHF (reinforcement learning and human feedback)
+- LoRA
+- QLoRA
+
+## Supervised fine-tuning:
+- Collect data : A few hundred - few thousand carefully curated examples. 
+- Choose a method : Full parameter, LoRA, QLoRA or parameter-efficient adapters.
+- Train for a few epochs : Keep the base weights frozen or partially frozen and update only a small subset or all weights.
+- Evaluate & Safety-Test : Measures exact-match, factuality and hallucination against held-out data.
+
+# Problems of Fine-Tuning:
+- Computational Resources
+- Technical Expertise
+
+### Note:
+- In-context learning is a core capability of LLM, where the model learns to solve a task purely by seeing examples in the prompt - without updating its weights. (e.g. few shot prompting)
+- An emergent property is a behaviour or ability that suddenly appears in a system when it reaches a certain scale or complexity - even though it was not explicitly programmed or expected from the individual components.
+- Instead of just example tasks, retrieve background information, facts, documents, product manuals.
+- Inject that into the prompt to augment the model knowledge.
+
+# What is RAG:
+- RAG is a way to make a language model smarter by giving it extra information at the time you ask question.
+- Information Retrieval + Text Generation
+
+    Query + Context --> Prompt --> LLM --> Response
+
+# Understanding RAG:
+- Indexing
+- Retrieval
+- Augmentation
+- Generation 
+
+# Indexing:
+- Indexing is the process of preparing knowledge base so that it can be efficiently searched at query time.
+    - 1. Document Ingestion
+    - 2. Text Chunking
+    - 3. Embedding Generation
+    - 4. Storage in Vector Store
+
+# Retrieval:
+- Retrieval is the real time process of finding the most relevant pieces of information from a pre-built index based on user query.
+
+# Augmentation:
+- Augmentation refers to the step where the retrieved documents are combined with the user query to form a new, enriched prompt for the LLM.
+
+# Generation:
+- Generation is the final step where a LLM uses the user query and the retrieved & augmented context to generate a response.
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 

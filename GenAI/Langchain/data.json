@@ -1,0 +1,949 @@
+[
+  {
+    "intent": "create_support_ticket",
+    "category": "helpdesk",
+    "user_queries": [
+      "raise a ticket",
+      "create ticket",
+      "i need to raise a support request",
+      "log an issue",
+      "open support ticket",
+      "create a complaint",
+      "report a problem",
+      "raise issue to support",
+      "ticket create karo",
+      "helpdesk ticket banana hai"
+    ],
+    "troubleshooting_flow": [
+      {
+        "step_id": 1,
+        "instruction": "Ask the user for a brief description of the issue and confirm the problem type",
+        "step_type": "basic",
+        "next_if_success": 2,
+        "next_if_failure": "ESCALATE"
+      },
+      {
+        "step_id": 2,
+        "instruction": "Ask for additional details such as error message, screenshots, or steps to reproduce",
+        "step_type": "basic",
+        "next_if_success": 3,
+        "next_if_failure": 3
+      },
+      {
+        "step_id": 3,
+        "instruction": "Auto-fill ticket fields including department, priority, and issue type based on detected intent",
+        "step_type": "advanced",
+        "next_if_success": "RESOLVED",
+        "next_if_failure": "ESCALATE"
+      }
+    ],
+    "conversation_skills": {
+      "opening_message": "I can help you create a support ticket for this issue.",
+      "clarifying_questions": [
+        "Can you describe the issue briefly?",
+        "Do you have any error message or screenshot?"
+      ],
+      "resolution_message": "Your ticket can now be created with the provided details.",
+      "escalation_message": "I will create a ticket and assign it to the support team."
+    },
+    "training_conversations": [
+      [
+        {"role": "user", "content": "raise a ticket"},
+        {"role": "assistant", "content": "I can help you create a support ticket. Can you describe the issue briefly?"},
+        {"role": "user", "content": "my app is not loading"},
+        {"role": "assistant", "content": "Do you see any error message or screenshot?"},
+        {"role": "user", "content": "no"},
+        {"role": "assistant", "content": "I will create a ticket for you and assign it to the support team."}
+      ]
+    ],
+    "escalation": {
+      "team": "support_team",
+      "priority": "medium"
+    },
+    "tags": ["ticket", "helpdesk"]
+  },
+ 
+  {
+    "intent": "check_ticket_status",
+    "category": "helpdesk",
+    "user_queries": [
+      "check my ticket status",
+      "what is the status of my ticket",
+      "is my issue resolved",
+      "ticket update",
+      "track my complaint",
+      "mera ticket kya hua",
+      "ticket progress kya hai",
+      "status of support request"
+    ],
+    "troubleshooting_flow": [
+      {
+        "step_id": 1,
+        "instruction": "Ask the user for ticket ID or recent issue details",
+        "step_type": "basic",
+        "next_if_success": 2,
+        "next_if_failure": "ESCALATE"
+      },
+      {
+        "step_id": 2,
+        "instruction": "Fetch ticket status from the system and present current state (Open, In Progress, Resolved)",
+        "step_type": "advanced",
+        "next_if_success": "RESOLVED",
+        "next_if_failure": "ESCALATE"
+      }
+    ],
+    "conversation_skills": {
+      "opening_message": "I can help you check your ticket status.",
+      "clarifying_questions": [
+        "Do you have the ticket ID?",
+        "Can you tell me what issue you reported?"
+      ],
+      "resolution_message": "Here is the current status of your ticket.",
+      "escalation_message": "I will connect you with support for further updates."
+    },
+    "training_conversations": [
+      [
+        {"role": "user", "content": "check my ticket"},
+        {"role": "assistant", "content": "I can help with that. Do you have the ticket ID?"},
+        {"role": "user", "content": "TK-12345"},
+        {"role": "assistant", "content": "Your ticket is currently in progress and being worked on."}
+      ]
+    ],
+    "escalation": {
+      "team": "support_team",
+      "priority": "low"
+    },
+    "tags": ["ticket", "status"]
+  },
+ 
+  {
+    "intent": "ticket_not_resolved_followup",
+    "category": "helpdesk",
+    "user_queries": [
+      "still not resolved",
+      "issue still there",
+      "problem not fixed",
+      "not working after steps",
+      "still facing issue",
+      "abhi bhi problem hai",
+      "solution did not work"
+    ],
+    "troubleshooting_flow": [
+      {
+        "step_id": 1,
+        "instruction": "Confirm whether the user followed all troubleshooting steps",
+        "step_type": "basic",
+        "next_if_success": 2,
+        "next_if_failure": 2
+      },
+      {
+        "step_id": 2,
+        "instruction": "Offer to raise or update a support ticket with full context",
+        "step_type": "advanced",
+        "next_if_success": "RESOLVED",
+        "next_if_failure": "ESCALATE"
+      }
+    ],
+    "conversation_skills": {
+      "opening_message": "I understand the issue is still not resolved.",
+      "clarifying_questions": [
+        "Have you tried all the steps I shared earlier?",
+        "Is the issue exactly the same or has anything changed?"
+      ],
+      "resolution_message": "We can now escalate this issue for further investigation.",
+      "escalation_message": "I will raise or update a ticket with all details for the support team."
+    },
+    "training_conversations": [
+      [
+        {"role": "user", "content": "still not resolved"},
+        {"role": "assistant", "content": "I understand. Have you followed all the steps I shared earlier?"},
+        {"role": "user", "content": "yes"},
+        {"role": "assistant", "content": "In that case, I can raise a ticket for you so the support team can investigate further."}
+      ]
+    ],
+    "escalation": {
+      "team": "support_team",
+      "priority": "high"
+    },
+    "tags": ["followup", "ticket"]
+  },
+ 
+  {
+    "intent": "notification_check",
+    "category": "system",
+    "user_queries": [
+      "check notifications",
+      "any updates",
+      "do i have any alerts",
+      "new ticket updates",
+      "notifications kya hai",
+      "any new messages",
+      "ticket updates aaye kya"
+    ],
+    "troubleshooting_flow": [
+      {
+        "step_id": 1,
+        "instruction": "Fetch recent notifications related to tickets or system updates",
+        "step_type": "basic",
+        "next_if_success": "RESOLVED",
+        "next_if_failure": "ESCALATE"
+      }
+    ],
+    "conversation_skills": {
+      "opening_message": "Let me check your latest notifications.",
+      "clarifying_questions": [],
+      "resolution_message": "Here are your latest updates.",
+      "escalation_message": "I will notify support if something looks incorrect."
+    },
+    "training_conversations": [
+      [
+        {"role": "user", "content": "any notifications"},
+        {"role": "assistant", "content": "You have a new ticket assigned and it is currently being worked on."}
+      ]
+    ],
+    "escalation": {
+      "team": "system_support",
+      "priority": "low"
+    },
+    "tags": ["notifications"]
+  }
+]
+ 
+[
+  {
+    "intent": "view_my_profile",
+    "category": "user_panel",
+    "user_queries": [
+      "how to view my profile",
+      "where is my profile",
+      "show my profile",
+      "my profile kahan hai",
+      "profile information kaise dekhe",
+      "how do I see my profile details",
+      "where can I find my name and email",
+      "profile page nahi mil raha",
+      "apna profile dekhna hai",
+      "where is my account info",
+      "how to check my email id on portal",
+      "profile section kaise open kare",
+      "I want to see my profile",
+      "my organisation details kahan hai",
+      "how to find my position in the portal",
+      "user profile page",
+      "profile details check karna hai",
+      "where to see my mobile number",
+      "account profile details",
+      "my profile open nahi ho raha"
+    ],
+    "troubleshooting_flow": [
+      {
+        "step_id": 1,
+        "instruction": "Click on the profile avatar icon at the top-right corner of the screen",
+        "step_type": "basic",
+        "next_if_success": 2,
+        "next_if_failure": "ESCALATE"
+      },
+      {
+        "step_id": 2,
+        "instruction": "Select 'My Profile' from the dropdown menu that appears",
+        "step_type": "basic",
+        "next_if_success": 3,
+        "next_if_failure": "ESCALATE"
+      },
+      {
+        "step_id": 3,
+        "instruction": "You will be taken to the Profile Information page where you can see your Full Name, Email ID, Mobile Number, Organisation, and Position",
+        "step_type": "basic",
+        "next_if_success": "RESOLVED",
+        "next_if_failure": "ESCALATE"
+      }
+    ],
+    "conversation_skills": {
+      "opening_message": "Sure, I can help you find your profile. Let me guide you to the My Profile section.",
+      "clarifying_questions": [
+        "Are you trying to view your profile details or update them?",
+        "Can you see the profile avatar icon at the top-right corner of the screen?"
+      ],
+      "resolution_message": "You should now be able to see your profile information including your name, email, organisation, and position.",
+      "escalation_message": "I will share this with the support team if you are still unable to access your profile page."
+    },
+    "training_conversations": [
+      [
+        {
+          "role": "user",
+          "content": "how to view my profile"
+        },
+        {
+          "role": "assistant",
+          "content": "Sure, I can help you find your profile. Let me guide you to the My Profile section."
+        },
+        {
+          "role": "assistant",
+          "content": "Please click on your profile avatar icon at the top-right corner of the screen."
+        },
+        {
+          "role": "user",
+          "content": "okay done"
+        },
+        {
+          "role": "assistant",
+          "content": "Now select 'My Profile' from the dropdown menu that appears."
+        },
+        {
+          "role": "user",
+          "content": "yes I can see it now"
+        },
+        {
+          "role": "assistant",
+          "content": "You should now be able to see your profile information including your name, email, organisation, and position."
+        }
+      ],
+      [
+        {
+          "role": "user",
+          "content": "where is my account info"
+        },
+        {
+          "role": "assistant",
+          "content": "Sure, I can help you find your profile. Let me guide you to the My Profile section."
+        },
+        {
+          "role": "assistant",
+          "content": "Can you see the profile avatar icon at the top-right corner of the screen?"
+        },
+        {
+          "role": "user",
+          "content": "no I don't see it"
+        },
+        {
+          "role": "assistant",
+          "content": "I will share this with the support team if you are still unable to access your profile page."
+        }
+      ],
+      [
+        {
+          "role": "user",
+          "content": "apna profile dekhna hai"
+        },
+        {
+          "role": "assistant",
+          "content": "Understood. Let me guide you to the My Profile section."
+        },
+        {
+          "role": "assistant",
+          "content": "Top-right corner mein apna profile avatar icon click karein."
+        },
+        {
+          "role": "user",
+          "content": "haan dikh raha hai"
+        },
+        {
+          "role": "assistant",
+          "content": "Ab 'My Profile' option select karein dropdown mein se."
+        },
+        {
+          "role": "user",
+          "content": "ho gaya"
+        },
+        {
+          "role": "assistant",
+          "content": "You should now be able to see your profile information including your name, email, organisation, and position."
+        }
+      ]
+    ],
+    "escalation": {
+      "team": "app_support",
+      "priority": "low"
+    },
+    "tags": [
+      "user_panel",
+      "profile",
+      "account"
+    ]
+  },
+  {
+    "intent": "change_password",
+    "category": "security",
+    "user_queries": [
+      "how to change password",
+      "password change karna hai",
+      "update my password",
+      "I want to reset my portal password",
+      "how to update password in ampcus",
+      "password kaise badle",
+      "security settings kahan hai",
+      "change account password",
+      "password bhool gaya portal ka",
+      "how to set new password",
+      "mera password change nahi ho raha",
+      "password update nahi ho raha",
+      "security setting open karo",
+      "password field nahi dikh raha",
+      "old password enter nahi ho raha",
+      "new password save nahi ho raha",
+      "password requirements kya hai",
+      "password criteria ampcus",
+      "confirm password match nahi ho raha",
+      "submit button kaam nahi kar raha security page pe",
+      "how long should my password be",
+      "password change karne ka option kahan hai",
+      "account security settings"
+    ],
+    "troubleshooting_flow": [
+      {
+        "step_id": 1,
+        "instruction": "Click on the profile avatar icon at the top-right corner and select 'My Profile' from the dropdown",
+        "step_type": "basic",
+        "next_if_success": 2,
+        "next_if_failure": "ESCALATE"
+      },
+      {
+        "step_id": 2,
+        "instruction": "Click on the 'Security' tab at the top of the profile page",
+        "step_type": "basic",
+        "next_if_success": 3,
+        "next_if_failure": "ESCALATE"
+      },
+      {
+        "step_id": 3,
+        "instruction": "Enter your Current Password, then enter your New Password, and confirm it in the Confirm New Password field. Make sure the new password meets the requirements: minimum 8 characters, at least one uppercase letter, one lowercase letter, one number, and one special character. Recommended length is 10-16 characters.",
+        "step_type": "basic",
+        "next_if_success": 4,
+        "next_if_failure": 4
+      },
+      {
+        "step_id": 4,
+        "instruction": "Click the 'Submit' button to save the new password. If you get a validation error, re-check that the new password and confirm password fields match and all requirements are met.",
+        "step_type": "basic",
+        "next_if_success": "RESOLVED",
+        "next_if_failure": "ESCALATE"
+      }
+    ],
+    "conversation_skills": {
+      "opening_message": "I can help you change your password. Let us go to the Security Settings.",
+      "clarifying_questions": [
+        "Do you know your current password?",
+        "Are you getting any error message when trying to submit the new password?"
+      ],
+      "resolution_message": "Your password should now be updated successfully. Please log in again with your new password if prompted.",
+      "escalation_message": "I will share this with the app_support team if the password change is still not working after these steps."
+    },
+    "training_conversations": [
+      [
+        {
+          "role": "user",
+          "content": "how to change password"
+        },
+        {
+          "role": "assistant",
+          "content": "I can help you change your password. Let us go to the Security Settings."
+        },
+        {
+          "role": "assistant",
+          "content": "Do you know your current password?"
+        },
+        {
+          "role": "user",
+          "content": "yes I know it"
+        },
+        {
+          "role": "assistant",
+          "content": "Please click on your profile avatar at the top-right corner, select 'My Profile', then click the 'Security' tab."
+        },
+        {
+          "role": "user",
+          "content": "okay I am on the security page"
+        },
+        {
+          "role": "assistant",
+          "content": "Enter your current password, then type your new password. Make sure it has at least 8 characters, one uppercase, one lowercase, one number, and one special character. Then confirm the new password and click Submit."
+        },
+        {
+          "role": "user",
+          "content": "done it worked"
+        },
+        {
+          "role": "assistant",
+          "content": "Your password should now be updated successfully. Please log in again with your new password if prompted."
+        }
+      ],
+      [
+        {
+          "role": "user",
+          "content": "password change nahi ho raha"
+        },
+        {
+          "role": "assistant",
+          "content": "Understood. I can help you with this. Let us check the Security Settings."
+        },
+        {
+          "role": "assistant",
+          "content": "Are you getting any error message when trying to submit the new password?"
+        },
+        {
+          "role": "user",
+          "content": "yes it says password does not match"
+        },
+        {
+          "role": "assistant",
+          "content": "Please make sure the 'New Password' and 'Confirm New Password' fields have exactly the same password entered. Also verify all requirements are met: minimum 8 characters, uppercase, lowercase, number, and special character."
+        },
+        {
+          "role": "user",
+          "content": "okay let me try again"
+        },
+        {
+          "role": "assistant",
+          "content": "Please let me know once you click Submit and if it goes through."
+        },
+        {
+          "role": "user",
+          "content": "yes it worked now"
+        },
+        {
+          "role": "assistant",
+          "content": "Your password should now be updated successfully. Please log in again with your new password if prompted."
+        }
+      ],
+      [
+        {
+          "role": "user",
+          "content": "password requirements kya hai"
+        },
+        {
+          "role": "assistant",
+          "content": "Sure! Here are the password requirements for the Ampcus portal."
+        },
+        {
+          "role": "assistant",
+          "content": "Your new password must have: minimum 8 characters, at least one uppercase letter, at least one lowercase letter, at least one number, and at least one special character. The recommended length is 10 to 16 characters for better security."
+        },
+        {
+          "role": "user",
+          "content": "okay thanks"
+        },
+        {
+          "role": "assistant",
+          "content": "Your password should now be updated successfully. Please log in again with your new password if prompted."
+        }
+      ]
+    ],
+    "escalation": {
+      "team": "app_support",
+      "priority": "medium"
+    },
+    "tags": [
+      "security",
+      "password",
+      "user_panel"
+    ]
+  },
+  {
+    "intent": "notification_preferences",
+    "category": "user_panel",
+    "user_queries": [
+      "how to manage notification settings",
+      "email notifications band karna hai",
+      "turn off email alerts",
+      "ticket update notification kaise band kare",
+      "newsletter unsubscribe karna hai",
+      "notification preferences kahan hai",
+      "how to stop getting emails from portal",
+      "email notification on karna hai",
+      "mujhe ticket updates nahi chahiye",
+      "how to change notification settings",
+      "notification settings update karna hai",
+      "I am getting too many emails from the portal",
+      "how to enable ticket update alerts",
+      "notifications not coming",
+      "email alerts kaise enable kare",
+      "newsletter subscribe karna hai",
+      "preferences tab kahan hai",
+      "how to customise notifications",
+      "ticket status change notification nahi aa rahi",
+      "notification toggle kaam nahi kar raha",
+      "how to turn on email notifications"
+    ],
+    "troubleshooting_flow": [
+      {
+        "step_id": 1,
+        "instruction": "Click on the profile avatar icon at the top-right corner, select 'My Profile' from the dropdown",
+        "step_type": "basic",
+        "next_if_success": 2,
+        "next_if_failure": "ESCALATE"
+      },
+      {
+        "step_id": 2,
+        "instruction": "Click on the 'Preferences' tab at the top of the profile page",
+        "step_type": "basic",
+        "next_if_success": 3,
+        "next_if_failure": "ESCALATE"
+      },
+      {
+        "step_id": 3,
+        "instruction": "Under 'Notification Settings', toggle the checkboxes for: Email Notifications (receive email alerts for ticket updates), Ticket Update (get notified when ticket status changes), and Newsletter (subscribe to product updates and tips) as per your preference",
+        "step_type": "basic",
+        "next_if_success": 4,
+        "next_if_failure": "ESCALATE"
+      },
+      {
+        "step_id": 4,
+        "instruction": "Click the 'Submit' button to save your notification preferences",
+        "step_type": "basic",
+        "next_if_success": "RESOLVED",
+        "next_if_failure": "ESCALATE"
+      }
+    ],
+    "conversation_skills": {
+      "opening_message": "I can help you manage your notification preferences. Let us go to the Preferences section.",
+      "clarifying_questions": [
+        "Do you want to turn on or turn off a specific notification type?",
+        "Which notification are you trying to change — email alerts, ticket updates, or the newsletter?"
+      ],
+      "resolution_message": "Your notification preferences should now be saved. You will receive or stop receiving alerts as per your updated settings.",
+      "escalation_message": "I will share this with the app_support team if the notification settings are still not saving correctly."
+    },
+    "training_conversations": [
+      [
+        {
+          "role": "user",
+          "content": "email notifications band karna hai"
+        },
+        {
+          "role": "assistant",
+          "content": "I can help you manage your notification preferences. Let us go to the Preferences section."
+        },
+        {
+          "role": "assistant",
+          "content": "Please click on your profile avatar at the top-right corner and select 'My Profile', then click the 'Preferences' tab."
+        },
+        {
+          "role": "user",
+          "content": "haan preferences page open hai"
+        },
+        {
+          "role": "assistant",
+          "content": "Under 'Notification Settings', uncheck the 'Email Notifications' checkbox and then click Submit to save."
+        },
+        {
+          "role": "user",
+          "content": "done"
+        },
+        {
+          "role": "assistant",
+          "content": "Your notification preferences should now be saved. You will no longer receive email alerts as per your updated settings."
+        }
+      ],
+      [
+        {
+          "role": "user",
+          "content": "ticket status change notification nahi aa rahi"
+        },
+        {
+          "role": "assistant",
+          "content": "Understood. Let me help you check your notification preferences."
+        },
+        {
+          "role": "assistant",
+          "content": "Which notification are you trying to change — email alerts, ticket updates, or the newsletter?"
+        },
+        {
+          "role": "user",
+          "content": "ticket update wala"
+        },
+        {
+          "role": "assistant",
+          "content": "Please go to My Profile > Preferences tab. Under Notification Settings, make sure the 'Ticket Update' checkbox is checked, then click Submit."
+        },
+        {
+          "role": "user",
+          "content": "it was unchecked, I enabled it now"
+        },
+        {
+          "role": "assistant",
+          "content": "Your notification preferences should now be saved. You will now get notified when your ticket status changes."
+        }
+      ],
+      [
+        {
+          "role": "user",
+          "content": "I am getting too many emails from the portal"
+        },
+        {
+          "role": "assistant",
+          "content": "I can help you reduce the email notifications. Let us update your preferences."
+        },
+        {
+          "role": "assistant",
+          "content": "Do you want to turn off email alerts, newsletter, or both?"
+        },
+        {
+          "role": "user",
+          "content": "both"
+        },
+        {
+          "role": "assistant",
+          "content": "Go to My Profile > Preferences tab. Under Notification Settings, uncheck both 'Email Notifications' and 'Newsletter' checkboxes and click Submit."
+        },
+        {
+          "role": "user",
+          "content": "done saved"
+        },
+        {
+          "role": "assistant",
+          "content": "Your notification preferences should now be saved. You will no longer receive those email alerts."
+        }
+      ]
+    ],
+    "escalation": {
+      "team": "app_support",
+      "priority": "low"
+    },
+    "tags": [
+      "user_panel",
+      "notifications",
+      "preferences"
+    ]
+  },
+  {
+    "intent": "display_settings",
+    "category": "user_panel",
+    "user_queries": [
+      "how to change language",
+      "language change karna hai portal mein",
+      "timezone kaise change kare",
+      "display settings kahan hai",
+      "portal language setting",
+      "how to update timezone",
+      "change timezone in ampcus",
+      "language setting nahi mil rahi",
+      "app ka language kaise badle",
+      "timezone wrong dikh raha hai",
+      "how to set timezone to IST",
+      "display preferences kaise update kare",
+      "portal mein language update nahi ho rahi",
+      "language option kahan hai preferences mein",
+      "customize display settings",
+      "portal timezone change",
+      "wrong timezone showing in portal"
+    ],
+    "troubleshooting_flow": [
+      {
+        "step_id": 1,
+        "instruction": "Click on the profile avatar icon at the top-right corner and select 'My Profile' from the dropdown",
+        "step_type": "basic",
+        "next_if_success": 2,
+        "next_if_failure": "ESCALATE"
+      },
+      {
+        "step_id": 2,
+        "instruction": "Click on the 'Preferences' tab at the top of the profile page",
+        "step_type": "basic",
+        "next_if_success": 3,
+        "next_if_failure": "ESCALATE"
+      },
+      {
+        "step_id": 3,
+        "instruction": "Under 'Display Settings' on the right side, select your preferred Language from the dropdown and update your Timezone as needed",
+        "step_type": "basic",
+        "next_if_success": 4,
+        "next_if_failure": "ESCALATE"
+      },
+      {
+        "step_id": 4,
+        "instruction": "Click the 'Submit' button to save your display settings",
+        "step_type": "basic",
+        "next_if_success": "RESOLVED",
+        "next_if_failure": "ESCALATE"
+      }
+    ],
+    "conversation_skills": {
+      "opening_message": "I can help you update your display settings. Let us go to the Preferences section.",
+      "clarifying_questions": [
+        "Are you trying to change the language or the timezone?",
+        "What timezone or language would you like to set?"
+      ],
+      "resolution_message": "Your display settings should now be updated. The portal will reflect your preferred language and timezone.",
+      "escalation_message": "I will share this with the app_support team if the display settings are still not saving correctly."
+    },
+    "training_conversations": [
+      [
+        {
+          "role": "user",
+          "content": "how to change language"
+        },
+        {
+          "role": "assistant",
+          "content": "I can help you update your display settings. Let us go to the Preferences section."
+        },
+        {
+          "role": "assistant",
+          "content": "Please click on your profile avatar at the top-right corner, select 'My Profile', then click the 'Preferences' tab."
+        },
+        {
+          "role": "user",
+          "content": "I am on the preferences page"
+        },
+        {
+          "role": "assistant",
+          "content": "On the right side under 'Display Settings', click the Language dropdown and select your preferred language, then click Submit."
+        },
+        {
+          "role": "user",
+          "content": "done"
+        },
+        {
+          "role": "assistant",
+          "content": "Your display settings should now be updated. The portal will reflect your preferred language."
+        }
+      ],
+      [
+        {
+          "role": "user",
+          "content": "timezone wrong dikh raha hai"
+        },
+        {
+          "role": "assistant",
+          "content": "Understood. Let me help you fix the timezone setting."
+        },
+        {
+          "role": "assistant",
+          "content": "What timezone would you like to set?"
+        },
+        {
+          "role": "user",
+          "content": "IST chahiye"
+        },
+        {
+          "role": "assistant",
+          "content": "Please go to My Profile > Preferences tab. Under Display Settings on the right side, update the Timezone field to IST and click Submit."
+        },
+        {
+          "role": "user",
+          "content": "saved successfully"
+        },
+        {
+          "role": "assistant",
+          "content": "Your display settings should now be updated. The portal will now show the correct IST timezone."
+        }
+      ]
+    ],
+    "escalation": {
+      "team": "app_support",
+      "priority": "low"
+    },
+    "tags": [
+      "user_panel",
+      "display_settings",
+      "preferences",
+      "language",
+      "timezone"
+    ]
+  },
+  {
+    "intent": "logout",
+    "category": "user_panel",
+    "user_queries": [
+      "how to logout",
+      "logout karna hai",
+      "sign out kaise kare",
+      "portal se kaise nikle",
+      "logout button kahan hai",
+      "how to sign out from ampcus",
+      "log out nahi ho raha",
+      "session end karna hai",
+      "account se bahar kaise nikle",
+      "logout option nahi dikh raha",
+      "how to exit my account",
+      "logout ka option kahan hai",
+      "sign out from portal"
+    ],
+    "troubleshooting_flow": [
+      {
+        "step_id": 1,
+        "instruction": "Click on the profile avatar icon at the top-right corner of the screen",
+        "step_type": "basic",
+        "next_if_success": 2,
+        "next_if_failure": "ESCALATE"
+      },
+      {
+        "step_id": 2,
+        "instruction": "Click on 'Logout' from the dropdown menu that appears",
+        "step_type": "basic",
+        "next_if_success": "RESOLVED",
+        "next_if_failure": "ESCALATE"
+      }
+    ],
+    "conversation_skills": {
+      "opening_message": "Sure, I can guide you to log out from the portal.",
+      "clarifying_questions": [
+        "Can you see the profile avatar icon at the top-right corner of the screen?"
+      ],
+      "resolution_message": "You have been successfully logged out of the Ampcus portal.",
+      "escalation_message": "I will share this with the app_support team if you are unable to log out."
+    },
+    "training_conversations": [
+      [
+        {
+          "role": "user",
+          "content": "how to logout"
+        },
+        {
+          "role": "assistant",
+          "content": "Sure, I can guide you to log out from the portal."
+        },
+        {
+          "role": "assistant",
+          "content": "Please click on your profile avatar icon at the top-right corner of the screen."
+        },
+        {
+          "role": "user",
+          "content": "okay done"
+        },
+        {
+          "role": "assistant",
+          "content": "Now click on 'Logout' from the dropdown menu."
+        },
+        {
+          "role": "user",
+          "content": "yes logged out"
+        },
+        {
+          "role": "assistant",
+          "content": "You have been successfully logged out of the Ampcus portal."
+        }
+      ],
+      [
+        {
+          "role": "user",
+          "content": "logout button kahan hai"
+        },
+        {
+          "role": "assistant",
+          "content": "Sure, I can guide you to log out from the portal."
+        },
+        {
+          "role": "assistant",
+          "content": "Top-right corner mein apna profile avatar icon click karein, phir 'Logout' option click karein."
+        },
+        {
+          "role": "user",
+          "content": "ho gaya"
+        },
+        {
+          "role": "assistant",
+          "content": "You have been successfully logged out of the Ampcus portal."
+        }
+      ]
+    ],
+    "escalation": {
+      "team": "app_support",
+      "priority": "low"
+    },
+    "tags": [
+      "user_panel",
+      "logout",
+      "account"
+    ]
+  }
+]
