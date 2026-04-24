@@ -1,0 +1,40 @@
+1. UI based enhancements
+
+2. Evaluation
+- Ragas (metric: faithfullness, answer_relevancy, context_precision, context_recall)
+- LangSmith
+
+3. Indexing
+- Document Ingestion
+- Text Splitting
+- Vector Store
+
+4. Retrieval
+
+    a. Pre-retrieval
+    - query rewriting using LLM
+    - multi-query generation
+    - domain aware routing
+
+    b. During Retrieval
+    - MMR
+    - Hybrid Retrieval
+    - Reranking
+
+    c. Post-retrieval
+    - context Compression
+
+5. Augmentation
+- prompt templating
+- answer grounding
+- context window optimization
+
+6. Generation
+- answer with citation
+- guard railing
+
+7. System Design
+- multimodal
+- agentic 
+- memory based
+

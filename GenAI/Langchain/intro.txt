@@ -629,9 +629,37 @@ Runnables solve this by:
 
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+Tools --> Tool Calling --> Agents
 
+## Tools in LangChain:
 
+# What is Tool:
+- A tool is just a python function or API that is packaged in a way the LLM can understand and call when needed.
 
+# Tools
+    - Built-in tools
+    - Custom tools
+
+# How tools fits into the Agent ecosystem:
+- An AI agent is an LLM-powered system that can autonomously think, decide and take actions using external tools or APIs to achieve a goal.
+- Agent = LLM(Reasoning & Decision Making) + Tools(Action)
+
+# Built-in Tools:
+- A built-in tool is a tool that langchain already provides for you - it is pre-built, production ready and requires minimal or no setup.
+- E.g. DuckDuckGoSearchRun, WikipediaQueryRun, PythonREPLTool, ShellTool, RequestGetTool, GmailSendMessageTool, SlackSendMessageTool, SQLDatabaseQueryTool
+
+# Custom Tools:
+- A custom tool is a tool that you defined yourself.
+
+# Ways to create custom tools:
+- using @tool decorator
+- using StructuredTool & Pydantic
+- using BaseTool class
+
+# Toolkits:
+- A toolkits is a collection of related tools that serve a common purpose - packaged together for convenience and reusability.
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 
