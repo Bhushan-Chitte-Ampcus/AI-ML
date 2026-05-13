@@ -661,11 +661,79 @@ Tools --> Tool Calling --> Agents
 
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+## Tool Calling in LangChain:
 
+# Tool Binding:
+- Tool Binding is the step where you register tools with a language models so that:
+    - The LLM knows what tools are available.
+    - It knows what each tool does (via description)
+    - It knows what input format to use (via schema)
 
+# Tool Calling:
+- Tool Calling is the process where the LLM decides, during a conversation or task, that it needs to use a specific tool and generates a structured output with:
+    - the name of the tool
+    - the arguments to call it with
 
+    - NOTE: The LLM does not actually run the tool - it just suggests the tool and the input arguments. The actual execution is handled by langchain.
 
+# Tool Execution:
+- Tool Execution is the step where the actual python function is run using the input arguments that the LLM suggests during tool calling.
 
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+## AI Agent:
+- An AI Agent is an intelligent system that receives a high-level goal from a user, and autonomously plans, decides, and executes a sequence of actions by using external tools, APIs, or knowledge sources - all while maintaining context, reasoning over multiple steps, adapting to new information, and Optimizing for the intended outcome.
+
+Agent = LLM + Tools
+
+### Characteristics of AI Agent:
+- Goal driven
+- Autonomous planning
+- Tool-using
+- Context-aware
+- Adaptive
+
+# ReAct:
+- ReAct is a design pattern used in AI agents that stands for Reasoning + Acting. It allows a language model to interleave internal reasoning (Thought) with external actions in a structured, multi-step process. [Thought, Action, Observation]
+
+# ReAct is useful for:
+- Multi-step Problems.
+- Tool-augmented tasks.
+- Making the agent reasoning transparent and auditable.
+
+# Agent & Agent Executor:
+
+- AgentExecutor orchestrate the entire loop [Thought, Action, Observation]
+    1. sends inputs and previous messages to the agent 
+    2. gets the next action from agent
+    3. executes that tool with provided input
+    4. adds the tools observation back into the history
+    5. loops again with updated history until the agent says final answer
+
+# Create an Agent:
+agent = create_react_agent(
+    llm=llm,
+    tools=[search_tool],
+    prompt=prompt
+)
+
+# Creating an Agent Executor:
+agent_executor = AgentExecutor(
+    agent=agent,
+    tools=[search_tool],
+    verbose=True
+)
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# Ollama
+
+## LLM based on Accessibility:
+- Proprietary models: AI models that are owned and controlled by a company.
+- Open source models: AI models whose core details are openly shared with the public.
+
+- Ollama is an open-source tool designed to run large language models (LLMs)—such as Llama 3, Mistral, and DeepSeek—locally on your own machine. It simplifies the process of setting up and running AI, acting like a package manager for AI models that allows users to download, run, and manage models via simple command-line interface (CLI) commands.
+- Ollama is a tool that lets you run large language models on your own computer. In simple words, ollama makes it easy to download, run and manage AI models locally using very simple commands.
 
 
 
