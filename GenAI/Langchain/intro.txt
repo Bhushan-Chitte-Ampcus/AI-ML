@@ -726,7 +726,7 @@ agent_executor = AgentExecutor(
 
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-# Ollama
+# Ollama (Download, Run, Manage)
 
 ## LLM based on Accessibility:
 - Proprietary models: AI models that are owned and controlled by a company.
@@ -735,9 +735,82 @@ agent_executor = AgentExecutor(
 - Ollama is an open-source tool designed to run large language models (LLMs)—such as Llama 3, Mistral, and DeepSeek—locally on your own machine. It simplifies the process of setting up and running AI, acting like a package manager for AI models that allows users to download, run, and manage models via simple command-line interface (CLI) commands.
 - Ollama is a tool that lets you run large language models on your own computer. In simple words, ollama makes it easy to download, run and manage AI models locally using very simple commands.
 
+## Benefits of Ollama:
+- Privacy and data control
+- Lower latency and offline access
+- Cost predictability and potential savings
+- Simple installation and setup
+- Pre-built model library
+- Customization of model
+- No vendor lock-in and IP protection
+- Run, Manage models with simple commands
 
+## Requirements:
+- operating system (window, mac, linux)
+- hardware
+- storage space
+- internet connection
+- basic command line knowledge
+- gpu
 
+## Basic common command:
+ollama --version
+ollama pull model_name
+ollama ls/list
+ollama run model_name
+ollama rm model_name
+/bye
+/show
+/set
 
+## Ollama
+- Ollama library
+- REST API
+- LangChain
+- CLI commands
+
+## Tool Calling:
+- 1. Tool create
+- 2. Tool schema
+- 3. LLM Call (prompt + tool schema)
+- 4. Run
+- 5. LLM (prompt + tool + tool result)
+
+## Model-File:
+- large language models are general-purpose, but in real life you want specialized behaviour.
+- A modelfile in ollama is a configuration file that defines how a model should behave, respond and be used. it does not contain the AI model itself. instead, it acts as a blueprint or instruction layer on top of an existing base model, where you take a base model and on that model give instructions.
+
+- A modelfile usually defines:
+    - which base model to use
+    - what system instructions to inject
+    - how responses should be structured
+    - what constraints exist
+    - what defaults should be applied
+    And ollama using the base model and instruction given to create an new model that have same brain but new identity.
+
+## commands to run Modelfile:
+cd "D:\AI-ML\GenAI\Langchain\Ollama"
+ollama create sentiment:latest -f Modelfile
+ollama run sentiment:latest "i loved the course but this too much expensive"
+
+## Ollama using Rest API:
+- Ollama internally work using Rest API hosted locally at port 11434
+- CLI commands and python library are just wrappers around the API end points.
+
+- workflow:
+    - user -> prompt -> API request -> web browser -> response -> convert -> user
+
+# Ollama using LangChain:
+- LangChain is an open-source framework that allows you to chain together different components to create advanced LLM applications. it acts as an orchestration layer that manages how data flows between the user, the model and external tools.
+
+# Ollama Cloud:
+- Ollama Cloud is a cloud based extension of the ollama platform that lets you run large language models without needing powerful local hardware. Instead of running on your own machine, the models are executed on powerful, datacentre-grade hardware managed by ollama.
+
+# Ollama Cloud commands:
+- ollama signin
+- ollama run gpt-oss:120b-cloud
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 
