@@ -1,0 +1,239 @@
+# Curriculum:
+
+- Foundations of Agentic AI
+- Langgraph Fundamentals
+- Advanced Langgraph
+- AI Agents
+- Agentic RAG
+- Productanization
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+### Agentic AI using Langgraph:
+
+# What is Generative AI:
+- Generative AI refers to a class of Artificial Intelligence models that can create new content - such as text, image, audio, code, video - that resembles human created data.
+
+# Generative AI vs Traditional AI
+- Traditional AI is about finding patterns in data and giving predictions and Generative AI is about learning the distribution of data so that it can generate a new sample from it.
+
+# Application Areas:
+- Creative and Business Writing
+- Software Development
+- Customer Support
+- Education
+- Designing
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# LLM Based Chatbot 
+- JD Drafting
+- JD Posting
+- Shortlisting
+- Scheduling
+- Interview
+- Drafting Offer
+
+# Problems
+- Reactive
+- No Memory
+- Generic Advice
+- Can't take actions
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# Tools
+- linkedin api
+- resume parser tool
+- calender api
+- mail api
+- human resource management access tool
+
+# Tool Augmented Chatbot:
+- JD Drafting
+- Job posting
+- Revising JD
+- Shortlisting
+- Scheduling
+- Interviewing
+- Drafting Offer
+- Onboarding
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# Agentic AI Chatbot:
+- JD Drafting
+- Revising JD
+- Shortlisting
+- Scheduling
+- Interviewing
+- Drafting Offer Letter
+- Onboarding
+
+# Specifications:
+- Proactive
+- Memory
+- Specific Advice
+- Take Actions
+- Adaption
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# What is Agentic AI:
+- Agentic AI is a type of AI that can take up a task or goal from a user and work toward completing it on its own, with minimal human guidance. 
+
+# Workflow: 
+- Goal
+- Plan
+- Execution
+
+## Key Characteristics:
+- Autonomous
+- Goal Oriented
+- Planning
+- Reasoning
+- Adaptability
+- Context Awareness
+
+# Autonomous:
+- Autonomy refers to the AI system ability to make decisions and take actions on its own to achieve a given goal, without needing step by step human instructions.
+- It's proactive
+- Autonomy in multiple facets
+- Autonomy can be controlled
+- Autonomy can be dangerous
+
+# Goal Oriented:
+- Goal Oriented means that the AI system operates with a persistent objective in mind and continuously directs its actions to achieve that objective, rather than just responding to isolated prompts.
+- Acts as a compass for Autonomy
+- Goals can come with constraints
+- Goals are stored in core Memory
+- This can be altered
+
+# Planning:
+- Planning is the agent ability to break down a high-level goal into a structured sequence of actions or subgoals and decide the best path to achieve the desired outcome.
+- Generating multiple candidate plans
+- Evaluate each plan (Efficiency, Tool Availability, Cost, Risk, Alignment)
+- Best plan with help of: (Human in the loop, Pre-programmed policy)
+
+# Reasoning:
+- Reasoning is the cognitive process through which an agentic ai system interprets information, draw conclusions, and make decisions - both while planning ahead and while executing actions in real time.
+
+- Reasoning during planning:
+    - goal decomposition
+    - tool selection
+    - resource estimation
+    
+- Resoning during execution:
+    - decision making
+    - human in the loop handling
+    - error handling
+
+# Adaptability:
+- Adaptability is the agent ability to modify it's plan, strategies or actions in response to unexpected conditions - all while staying aligned with the goal.
+
+# Context Awareness:
+- Context Awareness is the agent ability to understand, retain, and utilize relevant information from the ongoing task, past interactions, user preferences, and environmental cues to make better decisions throughout a multi step process.
+- Type of context (original goal, progess till now + interaction history, environmental state, tool response, user specific preferences, policy or guardrails)
+- Context Awareness is implemented through Memory
+- short term Memory
+- long term Memory
+
+
+## Components:
+- Brain (goal interpretation, planning, reasoning, tool selection, communication)
+- Orchestrator (task sequencing, conditional routing, retry logic, looping & iteration, delegation)
+- Tools (external actions, knowledge base access)
+- Memory (short term memory, long term memory, state tracking)
+- Supervisor (approval requests, guardrails enforcement, edge case escalation)
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+- why Langgraph exists
+- what is Langgraph
+- langchain vs Langgraph
+
+## Challenges of langchain:
+- Control flow complexity
+- Handling state
+- Event driven execution
+- Fault Tolerance
+- Human in the Loop
+- Nested Workflows
+- Observability
+
+## LangGraph:
+- LangGraph is an orchestration framework that enables you to build stateful, multi-step and event-driven workflows using large language models. it is ideal for designing both single agent and multi agent agentic ai applications. 
+- Think of LangGraph as a flowchart engine for LLMs - you define the steps, how they are connected and the logic that governs the transitions, LangGraph takes care of state management, conditional branching, looping, pausing/resuming and fault recovery - features essential for building robust, production grade AI systems.
+
+# When to Use What
+- Use LangChain when you are building simple, linear workflows - like a prompt chain, summarizer or a basic retrieval system.
+- Use LangGraph when your use case involves complex, non-linear workflows that need: conditional paths, loops, human in the loop steps, multi-agent coordination, asynchronous or event driven Execution.
+
+# Should we still use LangChain:
+- LangGraph is built on top of LangChain.
+- Still use LangChain components like: ChatOpenAI, PromptTemplate, Retrievers, DocumentLoaders, Tools
+- LangGraph handles workflow orchestration, while LangChain provides the building blocks for each step in that workflow.
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# What is LangGraph:
+- LangGraph is an orchestration framework for building intelligent, stateful and multi-step LLM workflows.
+- It enables advanced features like parallelism, loops, branching, memory and resumability - making it ideal for agentic and production grade AI applications.
+- It models logic as a graph of node and edges instead of linear chain.
+
+# LLM Workflows:
+
+1. LLM Workflows are a step by step process using which we can build complex LLM applications.
+2. Each step in a workflow performs a distinct task - such as prompting, reasoning, tool calling, memory access or decision making.
+3. Workflows can be linear, parallel, branched or looped, allowing for complex behaviours like retries, multi-agent communication, or tool-augmented reasoning.
+4. Common Workflow: Prompt Chaining, Routing, Parallelization, Orchestrator workers, Evaluator Optimizer.
+
+# Graphs, Nodes and Edges:
+
+## Graphs:
+- A graph is the complete workflow or execution pipeline.
+
+Think of it as:
+- the overall AI agent/application structure
+- defining what steps exist and how control moves between them
+
+## Nodes:
+- Nodes are the individual processing steps in the workflow.
+
+Each node usually:
+- receives the current state
+- performs some logic
+- returns updated state
+
+Examples of nodes:
+- LLM call
+- tool execution
+- retrieval step
+- validation step
+- memory update
+
+## Edges
+- Edges define how execution moves between nodes. They connect nodes together.
+
+Types:
+- Normal edge → always go to next node
+- Conditional edge → route based on logic/output
+
+
+# State:
+- In LangGraph, state is the shared memory that flows through workflow - it holds all the data being passed between nodes as graph runs.
+
+# Reducers:
+- Reducers in LangGraph define how updates from nodes are applied to the shared state. Each key in the state can have its own reducer, which determines whether new data replaces, merges, or adds to the existing value.
+
+# LangGraph Execution Models:
+1. graph definition: Define the workflow structure by creating nodes, edges, and the shared state schema.
+2. compilation: Convert the graph definition into an executable runtime by validating nodes, edges, and reducers.
+3. invocation: Start graph execution by providing the initial input state and activating the entry node.
+4. super step begin: LangGraph begins a synchronized execution cycle where all active nodes run in parallel.
+5. message passing and node activation: Nodes return state updates/messages, reducers merge them into the global state, and downstream nodes become active for the next super step.
+6. halting condition: Execution stops when there are no active nodes or pending messages left in the graph.
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# Sequential Workflow in LangGraph:
