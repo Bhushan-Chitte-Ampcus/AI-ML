@@ -1,0 +1,9 @@
+# Amazon Machine Image (AMI):
+- An Amazon Machine Image is a pre-configured template that provides the necessary information to launch an EC2 instance in AWS.
+- It includes
+    - Operating system
+    - Application server
+    - Pre-installed software and configurations
+
+# How to create an Image:
+- select instance -> Actions -> Image and Templates -> Create Image
