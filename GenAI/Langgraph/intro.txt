@@ -133,7 +133,7 @@
 
 # Context Awareness:
 - Context Awareness is the agent ability to understand, retain, and utilize relevant information from the ongoing task, past interactions, user preferences, and environmental cues to make better decisions throughout a multi step process.
-- Type of context (original goal, progess till now + interaction history, environmental state, tool response, user specific preferences, policy or guardrails)
+- Type of context (original goal, progress till now + interaction history, environmental state, tool response, user specific preferences, policy or guardrails)
 - Context Awareness is implemented through Memory
 - short term Memory
 - long term Memory
@@ -237,3 +237,56 @@ Types:
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # Sequential Workflow in LangGraph:
+- Sequential Workflow in LangGraph is a workflow design pattern where tasks are executed step-by-step in a fixed order. Each node in the graph performs a specific operation, and the output of one node becomes the input for the next node. This approach is useful for building structured AI pipelines such as data processing, content generation, validation, and decision-making systems where the flow must follow a clear sequence. In LangGraph, sequential workflows help create modular, maintainable, and easy-to-debug AI applications.
+
+# Parallel Workflow in LangGraph:
+Parallel Workflow in LangGraph allows multiple tasks or nodes to run simultaneously instead of executing one after another. This workflow is useful when independent operations can be processed at the same time, improving speed and efficiency. In LangGraph, different nodes can handle separate tasks in parallel, and their outputs are later combined or processed further. This approach reduces execution time and helps optimize complex AI applications.
+
+# Conditional Workflow in LangGraph:
+Conditional Workflow in LangGraph is a workflow where the execution path changes based on specific conditions or decisions. Instead of following a fixed sequence, the workflow dynamically selects the next node according to the input, state, or output of previous steps. In LangGraph, conditional edges are used to control the flow between nodes. This allows the system to make intelligent decisions and execute different actions depending on the situation.
+
+# Iterative Workflow in LangGraph:
+Iterative Workflow in LangGraph is a workflow where a task or process is repeated multiple times until a specific condition is met. Instead of moving directly to the next step, the workflow loops through the same nodes to refine, validate, or improve the output. In LangGraph, iterative workflows are created using loops and conditional edges that allow nodes to execute repeatedly based on the current state or result.
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# What is Persistence:
+- Persistence in LangGraph refers to the ability to save and restore the state of a workflow over time.
+- Persistence means the ability of a system to save and remember data or state information even after the program stops or restarts.
+- In AI workflows and frameworks like LangGraph, persistence helps the application continue from where it left off instead of starting from the beginning every time.
+
+# Checkpointers in Persistence:
+- Checkpointers are mechanisms used to save snapshots (checkpoints) of the workflow state during execution.
+
+    A checkpoint stores:
+    - Current step of execution
+    - Messages/state data
+    - Intermediate results
+    - Workflow progress
+
+If the system crashes or stops, the workflow can restart from the last checkpoint instead of running everything again.
+
+# Threads in Persistence:
+- Threads are unique identifiers used to track separate conversations or workflow executions. Each thread represents an independent session.
+
+
+# Benefits of Persistence:
+- Short term memory
+- Fault tolerance
+- Human in the loop
+- Time travel
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# What is Streaming?
+- In LLMs, Streaming means the model starts sending tokens as soon as they are generated, instead of waiting for the entire response to be ready before returning it.
+
+# Why Streaming
+- Faster response time 
+- Mimics human like conversation
+- Important for Multi-modal UIs
+- Better UX for long output such as code
+- You can cancel midway saving tokens
+- You can interleave UI updates
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
