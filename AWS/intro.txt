@@ -7,3 +7,50 @@
 
 # How to create an Image:
 - select instance -> Actions -> Image and Templates -> Create Image
+
+
+=============================================================================================================================================
+
+# AWS ELB & ASG Service
+
+# Elastic Load Balancer Points:
+- Distributes Traffic: It splits incoming traffic across multiple servers so no single server gets overloaded.
+- Improves Availability: If one server goes down, the load balancer automatically sends traffic to the working servers, ensuring your application stays available.
+- Scale Resources: It helps manage high demand by adding more servers during peak times and distributing the load.
+- Single point of access need to be expose.
+- High availability across availability zones.
+
+# Types of Load Balancers:
+
+1. Application load balancer: is perfect for web applications, handling complex HTTP and HTTPS requests.
+2. Network load balancer: is designed for high-performance and low latency, perfect for TCP/UDP traffic.
+3. Gateway load balancer: helps deploy, scale and manage third-party virtual applications, such as firewalls and monitoring solutions.
+
+# Auto Scaling Group (ASG):
+- ASG is a service that automatically add or remove EC2 instances based on demand to ensure your application is always available.
+- It helps scale up when more capacity is needed and scale down during low usage to save costs, keeping the right number of servers running at all times.
+
+# Functions of ASG:
+
+1. Automatic Scaling: Scale the number of EC2 instances up or down based on demand.
+2. Maintain instance health: Replace unhealthy instances automatically to ensure reliability.
+3. Use scaling policies: Set rules for scaling based on metrics like CPU usage or request count.
+4. Ensure Availability: Alwats keep a defined number of instances running to meet application needs.
+5. Schedule scaling: Pre-configure scaling activities for specific times.
+6. Distribute instances: Deploy instance across multiple availability zones for high availability. 
+7. Integrate with ELB: Attach instances to an Elastic Load Balancer to automatically balance traffic.
+8. Optimize costs: Scale down during low demand to save on infrastructure costs.
+
+=============================================================================================================================================
+
+# AWS Simple Storage Service (S3) Bucket:
+
+- S3 Versioning
+- S3 Replication
+- Data Encryption
+- S3 Bucket Policies
+- S3 Storage Classes
+- Logging monitoring
+- Hosting Static website
+- Snow Family
+- Storage Gateway (hybrid solution)
