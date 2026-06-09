@@ -44,12 +44,62 @@
 =============================================================================================================================================
 
 # AWS Simple Storage Service (S3) Bucket:
+- AWS S3 is a cloud based storage service that allows you to store, manage and retrieve large amounts of data like files, image, videos and backups securely and at scale.
+- It provides highly reliable, scalable object storage, making your data accessible from anywhere, anytime via the internet.
 
-- S3 Versioning
-- S3 Replication
+# Key points:
+- store data as objects.
+- globally unique name.
+- region specific.
+- each object within a bucket is stored as a key-value pair.
+- Maximum object size: 5TB is the maximum size for a single object in Amazon S3.
+- Multipart upload is recommended for objects larger than 5GB.
+
+# How to create Bucket:
+- S3 -> Create Bucket or General purpose buckets
+
+# Static Website Hosting:
+- Open Bucket -> Properties -> Static website hosting -> EDIT -> Enable Static website hosting -> Hosting type(host a static website) -> index document(index.html) -> save
+
+# Permissions:
+- Open Bucket -> Permissions -> Block Public Access (bucket settings) -> EDIT -> Uncheck Block all public access -> save
+
+# S3 Bucket Policies:
+- JSON-based access control policies that you attach directly to S3 bucket to manage permissions for accessing the bucket and its objects.
+- They allow you to define who can access the data and what actions they can performs, such as read, write or delete, enabling fine-grained control over the security of your data stored in S3.
+
+# Permissions:
+- Open Bucket -> Permissions -> Bucket Policy -> EDIT -> Policy generator -> Save changes.
+
+# S3 Versioning:
+- It allows you to keep multiple versions of an object in the same bucket, providing protection against accidental deletions or overwrites.
+- When versioning is enabled, S3 stores every versions of an object, allowing you to recover older version if needed, making ideal for data safety and backup.
+
+- Open bucket -> Properties -> Bucket versioning -> EDIT -> Enable -> save.
+
+# S3 Replication:
+- It allow you to automatically copy objects from one S3 bucket to another, which can be,
+    - within the same region (same region replication)
+    - in different region (cross region replication)
+
+- It is commonly used for compliance, redundancy, and to improve data access performance by maintaining copies closer to your users.
+
+# How to do S3 Replication:
+1. create new bucket
+2. open old bucket -> management -> replication rules -> create replication rules -> save -> Replicate existing objects? -> yes -> submit -> create batch operations job -> save
+
+# S3 Storage Classes:
+- open bucket -> click on object -> storage class -> EDIT -> save
+
+# S3 Bucket Lifecycle:
+- We can use lifecycle policies to control the movement of objects between different storage classes or delete them entirely, based on specific conditions like age or inactivity.
+- open bucket -> management -> create lifecycle rule -> save
+
+# S3 Snow Family:
+- 
+
 - Data Encryption
 - S3 Bucket Policies
-- S3 Storage Classes
 - Logging monitoring
 - Hosting Static website
 - Snow Family
