@@ -96,11 +96,23 @@
 - open bucket -> management -> create lifecycle rule -> save
 
 # S3 Snow Family:
-- 
+- The S3 Snow family is a group of physical devices offered by AWS to help move large amounts of data to the cloud when using the internet isn't practical.
+- These devices are used when there is too much data to upload over a regular connection or when dealing with remote areas without good internet.
 
-- Data Encryption
-- S3 Bucket Policies
-- Logging monitoring
-- Hosting Static website
-- Snow Family
-- Storage Gateway (hybrid solution)
+# Types of Snow Family:
+- Snowcone: A small, portable device for a few terabytes of data.
+- Snowball: A larger device for moving petabytes of data and can also be used for edge computing.
+- Snowmobile: This used for exabyte-scala data transfers, typically used by big companies moving entire data centers.
+
+# S3 Storage Gateway:
+- It is a hybrid cloud storage service that connect on-premises environments to cloud storage in Amazon S3. It helps extend your local storage to the cloud by acting as a bridge.
+
+=============================================================================================================================================
+
+# AWS Relational Database Service (RDS) Service:
+- AWS RDS as a managed database service that simplifies database setup, operation and scaling.
+
+# How to create database:
+- Aurora and RDS -> Databases -> Create database -> full configuration -> fill configuration details -> Create database.
+
+=============================================================================================================================================

@@ -1,0 +1,33 @@
+# ── Core LLM / LangChain stack ────────────────────────────────────────────────
+langchain-groq==1.1.3
+langchain-core==1.4.9
+langchain-community
+langchain-text-splitters
+langchain-huggingface
+
+# ── LangGraph ──────────────────────────────────────────────────────────────────
+langgraph
+langgraph-checkpoint-sqlite
+
+# ── Embeddings / Vector store ─────────────────────────────────────────────────
+sentence-transformers
+faiss-cpu
+
+# ── PDF loading ───────────────────────────────────────────────────────────────
+pypdf
+
+# ── Web search ────────────────────────────────────────────────────────────────
+duckduckgo-search
+
+# ── Stock price / HTTP ────────────────────────────────────────────────────────
+requests
+
+# ── Environment variables ─────────────────────────────────────────────────────
+python-dotenv
+
+# ── Frontend ──────────────────────────────────────────────────────────────────
+streamlit
+
+# ── Pydantic (pinned to match langchain-groq's dependency) ───────────────────
+pydantic==2.12.5
+pydantic-core==2.41.5
