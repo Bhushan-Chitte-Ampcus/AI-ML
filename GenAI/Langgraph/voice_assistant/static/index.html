@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CortexAI</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="shortcut icon" href="/favicon.ico" />
+  <link rel="stylesheet" href="/static/style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- Animated particle background -->
+  <canvas id="bgCanvas"></canvas>
+
+  <!-- ── Welcome / Name Gate Overlay ───────────────────────── -->
+  <div class="welcome-overlay" id="welcomeOverlay">
+    <div class="welcome-card">
+
+      <!-- Brand logo -->
+      <div class="welcome-logo">
+        <span class="logo-ai">CORTEX</span><span class="logo-assistant">AI</span>
+      </div>
+      <p class="welcome-tagline">Advanced Voice Intelligence System</p>
+
+      <!-- Animated orb decoration -->
+      <div class="welcome-orb-wrap">
+        <div class="w-ring w-ring-3"></div>
+        <div class="w-ring w-ring-2"></div>
+        <div class="w-ring w-ring-1"></div>
+        <div class="welcome-orb">
+          <svg viewBox="0 0 24 24" fill="none" width="38" height="38">
+            <rect x="9" y="2" width="6" height="11" rx="3" fill="#00e5ff"/>
+            <path d="M5 10a7 7 0 0 0 14 0" stroke="#00e5ff" stroke-width="2" stroke-linecap="round"/>
+            <line x1="12" y1="17" x2="12" y2="21" stroke="#00e5ff" stroke-width="2" stroke-linecap="round"/>
+            <line x1="9" y1="21" x2="15" y2="21" stroke="#00e5ff" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+      </div>
+
+      <p class="welcome-prompt">Enter your name to begin</p>
+
+      <div class="welcome-input-row">
+        <input
+          id="nameInput"
+          type="text"
+          placeholder="Your name…"
+          autocomplete="off"
+          maxlength="40"
+          aria-label="Your name"
+        />
+        <button id="nameSubmitBtn" aria-label="Enter">
+          <svg viewBox="0 0 24 24" fill="none" width="18" height="18">
+            <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+      <p class="welcome-hint">Press Enter or click the arrow</p>
+    </div>
+  </div>
+
+  <div class="app" id="mainApp" style="display:none;">
+
+    <!-- Header -->
+    <header>
+      <div class="logo-text">
+        <span class="logo-ai">CORTEX</span><span class="logo-assistant">AI</span>
+      </div>
+      <p class="subtitle">Powered by LangGraph + Groq &nbsp;|&nbsp; <span id="userGreeting"></span></p>
+    </header>
+
+    <!-- Wave visualizer + Orb mic -->
+    <div class="visualizer-section">
+      <canvas id="waveCanvas"></canvas>
+      <div class="orb-wrapper">
+        <div class="orb-ring ring-3"></div>
+        <div class="orb-ring ring-2"></div>
+        <div class="orb-ring ring-1"></div>
+        <button id="micBtn" class="orb" aria-label="Toggle microphone">
+          <svg class="mic-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="9" y="2" width="6" height="11" rx="3" fill="currentColor"/>
+            <path d="M5 10a7 7 0 0 0 14 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <line x1="12" y1="17" x2="12" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <line x1="9" y1="21" x2="15" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Status label -->
+    <div class="status-bar">
+      <span class="status-dot" id="statusDot"></span>
+      <span class="status-text" id="statusText">Click the orb to speak</span>
+    </div>
+
+    <!-- Chat window -->
+    <div class="chat-window" id="chatWindow"></div>
+
+    <!-- Text input row -->
+    <div class="input-area">
+      <input
+        type="text"
+        id="textInput"
+        placeholder="Or type your message here…"
+        autocomplete="off"
+        aria-label="Message input"
+      />
+      <button id="sendBtn" aria-label="Send">
+        <svg viewBox="0 0 24 24" fill="none" width="18" height="18">
+          <path d="M22 2L11 13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <path d="M22 2L15 22 11 13 2 9l20-7z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Controls -->
+    <div class="controls">
+      <label class="toggle-label">
+        <input type="checkbox" id="autoSpeak" checked />
+        <span class="toggle-track"><span class="toggle-thumb"></span></span>
+        Auto-speak replies
+      </label>
+      <label class="toggle-label">
+        <input type="checkbox" id="wakeWordToggle" />
+        <span class="toggle-track"><span class="toggle-thumb"></span></span>
+        Hey CortexAI
+      </label>
+      <button id="clearBtn" class="clear-btn">
+        <svg viewBox="0 0 24 24" fill="none" width="14" height="14">
+          <path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Clear
+      </button>
+    </div>
+
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

@@ -342,4 +342,58 @@ MCP (Model Context Protocol) is an open standard (created by Anthropic) that let
 ### What:
 - Query + Context --> Prompt --> LLM --> Response
 
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# Human In The Loop (HITL):
+
+### What is HITL:
+- HITL is a design approach in AI systems where a human actively participates at critical points of the AI workflow - either to supervise, approve, correct or guide the model's output.
+- Think of HITL as putting a human "checkpoint" inside an AI pipeline so that important decisions are not made autonomously by the model.
+
+### Why HITL:
+- To help agentic systems.
+- To add accountability.
+
+### HITL Ensures:
+- Accuracy
+- Safety
+- Ethical Alignment
+- Better user experience
+ 
+### Common HITL Patterns:
+- Action Approval Patterns
+- Output Review / Edit Patterns
+- Ambiguity Clarification Patterns
+- Escalation Patterns
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# What are SubGraphs:
+- A SubGraphs in LangGraph usually means a graph that is embedded and executed as a node inside another graph.
+
+# Why SubGraphs are needed:
+- User --> LLM --> Output
+
+    # Benefits:
+    - Failure Isolation
+    - State Separation
+    - Observability
+
+    # Invoke a graph from a node:
+    - SubGraphs are called from inside a node in the parent graph.
+    
+    # Add a graph as a node:
+    - A SubGraphs is added directly as a node in the parent and shares state keys with the parent.
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# LLM Memory:
+- A LLM at inference is just a Parameterized math function. [y = f(x)]
+- Context Window: The context window is the amount of text an LLM can read and remember at one time before answering.
+- In-context Learning is an emergent ability that allows an LLM to use information and patterns present in the prompt itself, in addition to its trained parametric knowledge, to generate an answer.
+
+
+
+
+
 
