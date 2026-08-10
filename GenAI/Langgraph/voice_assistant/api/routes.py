@@ -41,13 +41,15 @@ async def chat(request: ChatRequest) -> ChatResponse:
     if history is not None:
         # In-memory mode: prepend history manually
         result = await graph.ainvoke(
-            {"messages": history + [HumanMessage(content=request.message)]},
+            {"messages": history + [HumanMessage(content=request.message)],
+             "user_name": request.user_name},
             config=config,
         )
         set_history(request.session_id, result["messages"])
     else:
         result = await graph.ainvoke(
-            {"messages": [HumanMessage(content=request.message)]},
+            {"messages": [HumanMessage(content=request.message)],
+             "user_name": request.user_name},
             config=config,
         )
 

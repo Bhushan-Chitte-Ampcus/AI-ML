@@ -67,7 +67,16 @@ def _trim_messages(messages: list[BaseMessage]) -> list[BaseMessage]:
 
 
 def _build_messages(state: AssistantState) -> list[BaseMessage]:
-    return [SystemMessage(content=SYSTEM_PROMPT)] + _trim_messages(state["messages"])
+    # Personalise the system prompt with the user's name if available
+    name = state.get("user_name", "").strip()
+    if name:
+        personal_prompt = (
+            f"{SYSTEM_PROMPT} "
+            f"The user's name is {name} — address them by name occasionally to be friendly."
+        )
+    else:
+        personal_prompt = SYSTEM_PROMPT
+    return [SystemMessage(content=personal_prompt)] + _trim_messages(state["messages"])
 
 
 # ── Standard node (ainvoke — full response at once) ──────────────────────────

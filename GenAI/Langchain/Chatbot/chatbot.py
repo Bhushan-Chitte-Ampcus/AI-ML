@@ -17,7 +17,8 @@ if hf_token:
 
 # ---------------- Load LLM ----------------
 llm = HuggingFacePipeline.from_model_id(
-    model_id="TinyLlama/TinyLlama-1.1B-Chat-v1.0",
+    # model_id="TinyLlama/TinyLlama-1.1B-Chat-v1.0",
+    model_id="Qwen/Qwen2.5-7B-Instruct",
     task="text-generation",
     pipeline_kwargs={
         "temperature": 0.5,

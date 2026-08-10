@@ -5,6 +5,7 @@ from pydantic import BaseModel
 class ChatRequest(BaseModel):
     message: str
     session_id: str = "default"
+    user_name: str = ""          # passed from frontend after name entry
 
 
 class ChatResponse(BaseModel):

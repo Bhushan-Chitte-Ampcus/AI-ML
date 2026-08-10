@@ -677,3 +677,12 @@ header {
   animation: dot-blink 1.5s ease-in-out infinite alternate;
 }
 .status-bar.wake .status-text { color: #00ffb4; }
+
+/* Wake phrase confirmed — brief flash before entering command mode */
+.orb.wake-triggered {
+  box-shadow:
+    0 0 0 3px #fff,
+    0 0 30px rgba(255,255,255,.6),
+    0 0 60px rgba(0,229,255,.4);
+  transition: box-shadow .1s;
+}

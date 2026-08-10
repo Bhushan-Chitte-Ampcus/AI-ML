@@ -215,17 +215,33 @@
     isSpeaking = false;
     waveTarget = 0;
     setOrbState('');
-    // Restore correct status depending on wake mode
-    if (wakeActive) {
-      micBtn.classList.add('wake-standby');
-      setStatus("Listening for 'Hey CortexAI'…", 'wake');
-    } else {
-      setStatus('Click the orb to speak');
+    // Status restored by the caller (_afterTTS or wake mode)
+  }
+
+  // Called every time TTS finishes (or is skipped).
+  // Decides what to do next: auto-listen or return to standby.
+  // afterWelcome=true forces auto-listen even if wake mode is off.
+  function _afterTTS(afterWelcome = false) {
+    // Auto-start listening if wake mode is ON, or right after the welcome greeting
+    if ((wakeActive || afterWelcome) && SpeechRecognition) {
+      setTimeout(() => {
+        if (!isListening && !isSpeaking) {
+          _startManualCommand();
+        }
+      }, 350);
+      return;
     }
+    // Wake mode OFF and not welcome — restore idle status
+    setStatus('Click the orb to speak');
   }
 
   function speak(text, onDone) {
-    if (!autoSpeak.checked) { onDone?.(); return; }
+    if (!autoSpeak.checked) {
+      // Auto-speak is off — still trigger auto-listen if wake mode is on
+      _afterTTS();
+      onDone?.();
+      return;
+    }
 
     stopAudio();  // cancel any in-progress speech
 
@@ -237,7 +253,11 @@
     const audio  = new Audio(API_TTS(text));
     currentAudio = audio;
 
-    audio.onended = () => { stopAudio(); onDone?.(); };
+    audio.onended = () => {
+      stopAudio();
+      _afterTTS();
+      onDone?.();
+    };
     audio.onerror = () => {
       stopAudio();
       setStatus('TTS error — is the server running?', 'error');
@@ -245,8 +265,8 @@
     };
 
     audio.play().catch(() => {
-      // Autoplay policy blocked playback — degrade gracefully
       stopAudio();
+      _afterTTS();
       onDone?.();
     });
   }
@@ -271,9 +291,9 @@
       mainApp.style.display        = 'flex';
       resizeCanvases();
 
-      const welcomeMsg = `Welcome to CortexAI, ${userName}!`;
+      const welcomeMsg = `Welcome to CortexAI, ${userName}! How can I assist you today?`;
       appendMessage('assistant', welcomeMsg);
-      setTimeout(() => speak(welcomeMsg), 200);
+      setTimeout(() => speak(welcomeMsg, () => _afterTTS(true)), 200);
       textInput.focus();
     }, { once: true });
   }
@@ -284,159 +304,300 @@
   });
 
   // ═══════════════════════════════════════════════════════════
-  // SPEECH RECOGNITION — wake word + command (two-stage)
+  // SPEECH RECOGNITION — unified single-instance approach
   //
-  // Stage 1 — wakeRecognition: continuous, low-footprint listener.
-  //   Runs whenever "Hey CortexAI" toggle is ON.
-  //   Only looks for wake phrases; ignores everything else.
+  // One continuous SpeechRecognition instance handles everything:
   //
-  // Stage 2 — recognition: single-shot command capture.
-  //   Fires automatically after wake word detected, OR manually
-  //   when the user clicks the orb.
+  //  STANDBY mode  (wakeActive=true, mode='standby')
+  //    → runs continuously, silently filters for wake phrases
+  //    → on wake phrase → switches to COMMAND mode instantly
+  //
+  //  COMMAND mode  (mode='command')
+  //    → captures the full user query (strips the wake phrase prefix)
+  //    → on silence/end → sends message, returns to STANDBY
+  //
+  //  MANUAL mode   (mode='command', triggered by orb click)
+  //    → same as COMMAND but without wake phrase stripping
+  //
+  // Single instance = no restart gap, no two-instance race conditions.
+  // Chrome auto-stop on silence is handled by restarting in onend.
   // ═══════════════════════════════════════════════════════════
+
   const SpeechRecognition =
     window.SpeechRecognition || window.webkitSpeechRecognition;
 
-  // Wake phrases — any of these triggers command mode
-  const WAKE_PHRASES = ['hey cortexai', 'hey cortex ai', 'cortex ai', 'hey cortex'];
+  // Accepted wake phrases (fuzzy — Chrome mishears proper nouns)
+  const WAKE_PHRASES = [
+    'hey cortex', 'hey cortexai', 'hey cortex ai',
+    'cortex ai',  'ok cortex',    'okay cortex',
+    'hi cortex',  'hello cortex',
+  ];
 
-  let recognition     = null;   // command recogniser (single-shot)
-  let wakeRecognition = null;   // wake-word recogniser (continuous)
-  let wakeActive      = false;  // is continuous listening running?
-  let commandPending  = false;  // prevents double-trigger
+  // How long (ms) to wait after wake phrase before treating new speech as command
+  const WAKE_CAPTURE_DELAY = 400;
+
+  let wakeActive    = false;  // is wake-word mode enabled
+  let srMode        = 'idle'; // 'idle' | 'standby' | 'command'
+  let sr            = null;   // single SpeechRecognition instance
+  let srRunning     = false;  // Chrome state tracking
+  let srRestartTimer = null;
+  let wakeDetectedAt = 0;     // timestamp when wake phrase was last heard
+  let capturedQuery  = '';    // accumulates command after wake phrase
 
   function _containsWakePhrase(text) {
-    const t = text.toLowerCase();
+    const t = text.toLowerCase().trim();
     return WAKE_PHRASES.some(p => t.includes(p));
   }
 
-  // ── Command recogniser (single-shot) ───────────────────────
-  if (SpeechRecognition) {
-    recognition = new SpeechRecognition();
-    recognition.continuous     = false;
-    recognition.interimResults = true;
-    recognition.lang           = 'en-US';
+  function _stripWakePhrase(text) {
+    // Remove the wake phrase from the front so it isn't sent to the LLM
+    let t = text.toLowerCase().trim();
+    let result = text.trim();
+    for (const phrase of WAKE_PHRASES) {
+      const idx = t.indexOf(phrase);
+      if (idx !== -1) {
+        result = text.slice(idx + phrase.length).trim();
+        // Remove leading punctuation/comma
+        result = result.replace(/^[,.\s]+/, '').trim();
+        break;
+      }
+    }
+    return result;
+  }
 
-    recognition.onstart = () => {
+  function _buildSR() {
+    if (!SpeechRecognition) return null;
+    const r       = new SpeechRecognition();
+    r.continuous     = true;
+    r.interimResults = true;
+    r.lang           = 'en-US';
+    r.maxAlternatives = 3;      // more alternatives = better wake phrase matching
+
+    r.onstart = () => { srRunning = true; };
+
+    r.onresult = (e) => {
+      for (let i = e.resultIndex; i < e.results.length; i++) {
+        // Collect all alternatives for better wake phrase coverage
+        let heard = '';
+        for (let a = 0; a < e.results[i].length; a++) {
+          heard += ' ' + e.results[i][a].transcript;
+        }
+        heard = heard.toLowerCase().trim();
+        const isFinal = e.results[i].isFinal;
+
+        // ── STANDBY: watching for wake phrase ──────────────
+        if (srMode === 'standby') {
+          if (_containsWakePhrase(heard)) {
+            wakeDetectedAt = Date.now();
+            capturedQuery  = _stripWakePhrase(e.results[i][0].transcript);
+            _enterCommandMode();
+          }
+          continue;
+        }
+
+        // ── COMMAND: capturing the user's query ─────────────
+        if (srMode === 'command') {
+          const raw = e.results[i][0].transcript;
+
+          // If wake phrase is in same utterance, strip it
+          const stripped = _containsWakePhrase(raw.toLowerCase())
+            ? _stripWakePhrase(raw)
+            : raw;
+
+          if (isFinal) {
+            capturedQuery = stripped.trim();
+            // Finalise immediately on final result
+            _finaliseCommand();
+          } else {
+            // Show interim transcript in the text box
+            textInput.value = stripped.trim();
+            waveTarget = Math.min(1, 0.65 + i * 0.05);
+          }
+        }
+      }
+    };
+
+    r.onend = () => {
+      srRunning = false;
+      if (srMode === 'command') {
+        // Silence timeout — treat whatever we have as the final command
+        _finaliseCommand();
+        return;
+      }
+      // Standby: Chrome stopped on silence — restart
+      if (srMode === 'standby') {
+        clearTimeout(srRestartTimer);
+        srRestartTimer = setTimeout(_restartSR, 500);
+      }
+    };
+
+    r.onerror = (e) => {
+      srRunning = false;
+      if (e.error === 'not-allowed' || e.error === 'service-not-allowed') {
+        wakeActive             = false;
+        wakeWordToggle.checked = false;
+        srMode = 'idle';
+        micBtn.classList.remove('wake-standby');
+        setStatus('Microphone access denied — check browser settings', 'error');
+        return;
+      }
+      if (e.error === 'no-speech' || e.error === 'network' || e.error === 'aborted') {
+        if (srMode === 'command') {
+          _finaliseCommand();
+          return;
+        }
+        if (srMode === 'standby') {
+          clearTimeout(srRestartTimer);
+          srRestartTimer = setTimeout(_restartSR, 600);
+        }
+      }
+    };
+
+    return r;
+  }
+
+  function _restartSR() {
+    if (srMode !== 'standby' || srRunning) return;
+    sr = _buildSR();
+    try {
+      sr.start();
+      _setStandbyUI();
+    } catch (_) {
+      srRestartTimer = setTimeout(_restartSR, 1000);
+    }
+  }
+
+  function _enterCommandMode() {
+    srMode = 'command';
+    isListening = true;
+    waveTarget  = 0.75;
+    setOrbState('listening');
+    setStatus('Listening for your command…', 'listening');
+    // Brief flash on the orb to confirm wake word heard
+    micBtn.classList.add('wake-triggered');
+    setTimeout(() => micBtn.classList.remove('wake-triggered'), 600);
+  }
+
+  function _finaliseCommand() {
+    if (srMode !== 'command') return;
+    const query = capturedQuery || textInput.value.trim();
+    capturedQuery = '';
+    textInput.value = '';
+    isListening = false;
+    waveTarget  = 0;
+    setOrbState('');
+
+    if (query) {
+      textInput.value = query;
+      sendMessage();
+      // _afterTTS() will auto-restart listening once TTS completes
+    }
+
+    // Go back to standby (not command) — auto-listen will be triggered by _afterTTS
+    if (wakeActive) {
+      srMode = 'standby';
+      // Keep the SR instance running in standby so it can wake again if needed
+      clearTimeout(srRestartTimer);
+      srRestartTimer = setTimeout(() => {
+        if (srMode === 'standby' && !isSpeaking) {
+          sr = _buildSR();
+          try { sr.start(); } catch (_) {}
+          _setStandbyUI();
+        }
+      }, 800);
+    } else {
+      srMode = 'idle';
+      setStatus('Click the orb to speak');
+    }
+  }
+
+  function _setStandbyUI() {
+    micBtn.classList.add('wake-standby');
+    setStatus("Say 'Hey CortexAI' or wait after my reply…", 'wake');
+  }
+
+  // ── Manual orb click ───────────────────────────────────────
+  function _startManualCommand() {
+    stopAudio();
+    capturedQuery = '';
+    textInput.value = '';
+
+    if (srMode === 'standby') {
+      // Reuse running instance — just switch mode
+      srMode = 'command';
+      micBtn.classList.remove('wake-standby');
       isListening = true;
       waveTarget  = 0.7;
       setOrbState('listening');
       setStatus('Listening…', 'listening');
-    };
-    recognition.onresult = (e) => {
-      const transcript = Array.from(e.results).map(r => r[0].transcript).join('');
-      textInput.value  = transcript;
-      waveTarget       = Math.min(1, 0.6 + e.results.length * 0.05);
-    };
-    recognition.onend = () => {
-      isListening    = false;
-      commandPending = false;
-      waveTarget     = 0;
-      setOrbState('');
-      // Restore status based on wake mode
-      if (wakeActive) {
-        setStatus("Listening for 'Hey CortexAI'…", 'wake');
-      } else {
-        setStatus('Click the orb to speak');
-      }
-      if (textInput.value.trim()) sendMessage();
-      // Resume wake listener if toggle is still on
-      if (wakeActive) _startWakeListener();
-    };
-    recognition.onerror = (e) => {
-      isListening    = false;
-      commandPending = false;
-      waveTarget     = 0;
-      setOrbState('');
-      if (e.error !== 'no-speech') {
-        setStatus(`Mic error: ${e.error}`, 'error');
-      } else if (wakeActive) {
-        setStatus("Listening for 'Hey CortexAI'…", 'wake');
-        _startWakeListener();
-      } else {
-        setStatus('Click the orb to speak');
-      }
-    };
-  } else {
-    micBtn.style.cursor = 'not-allowed';
-    micBtn.title        = 'Speech recognition not supported. Use Chrome or Edge.';
-    setStatus('Voice input unavailable — use Chrome or Edge', 'error');
+      return;
+    }
+
+    // Not running — start fresh
+    srMode = 'command';
+    clearTimeout(srRestartTimer);
+    if (!sr) sr = _buildSR();
+    try {
+      sr.start();
+      isListening = true;
+      waveTarget  = 0.7;
+      setOrbState('listening');
+      setStatus('Listening…', 'listening');
+    } catch (_) {
+      // Already running — just update mode
+      isListening = true;
+      waveTarget  = 0.7;
+      setOrbState('listening');
+      setStatus('Listening…', 'listening');
+    }
   }
 
-  // ── Wake-word recogniser (continuous) ──────────────────────
-  function _buildWakeRecognition() {
-    if (!SpeechRecognition) return null;
-    const wr          = new SpeechRecognition();
-    wr.continuous     = true;
-    wr.interimResults = true;
-    wr.lang           = 'en-US';
-
-    wr.onresult = (e) => {
-      if (commandPending) return;
-      const last  = e.results[e.results.length - 1];
-      const heard = last[0].transcript.toLowerCase();
-      if (_containsWakePhrase(heard)) {
-        commandPending = true;
-        _triggerCommandMode();
-      }
-    };
-    wr.onend = () => {
-      // Continuous recognition stops itself in some browsers — restart it
-      if (wakeActive && !isListening) {
-        setTimeout(() => { if (wakeActive && !isListening) wr.start(); }, 300);
-      }
-    };
-    wr.onerror = (e) => {
-      if (e.error === 'not-allowed' || e.error === 'service-not-allowed') {
-        wakeActive = false;
-        wakeWordToggle.checked = false;
-        setStatus('Microphone permission denied', 'error');
-      }
-    };
-    return wr;
+  function _stopManualCommand() {
+    capturedQuery = '';
+    textInput.value = '';
+    isListening = false;
+    waveTarget  = 0;
+    setOrbState('');
+    try { sr?.stop(); } catch (_) {}
+    if (wakeActive) {
+      srMode = 'standby';
+      srRestartTimer = setTimeout(_restartSR, 500);
+    } else {
+      srMode = 'idle';
+      setStatus('Click the orb to speak');
+    }
   }
 
-  function _startWakeListener() {
-    if (!wakeActive || isListening) return;
-    if (!wakeRecognition) wakeRecognition = _buildWakeRecognition();
-    try { wakeRecognition.start(); } catch (_) { /* already running */ }
-    micBtn.classList.add('wake-standby');
-    setStatus("Listening for 'Hey CortexAI'…", 'wake');
-  }
-
-  function _stopWakeListener() {
-    wakeActive = false;
-    try { wakeRecognition?.stop(); } catch (_) {}
-    micBtn.classList.remove('wake-standby');
-    setStatus('Click the orb to speak');
-  }
-
-  function _triggerCommandMode() {
-    // Stop wake listener, start command capture
-    try { wakeRecognition?.stop(); } catch (_) {}
-    micBtn.classList.remove('wake-standby');
-    stopAudio();    // stop TTS before listening
-
-    // Brief visual feedback that wake word was heard
-    setStatus('Wake word detected — speak now!', 'listening');
-    waveTarget = 0.5;
-
-    setTimeout(() => {
-      if (!isListening) {
-        try { recognition.start(); } catch (_) {}
-      }
-    }, 250);
-  }
-
-  // ── Wake word toggle ────────────────────────────────────────
+  // ── Wake word toggle ───────────────────────────────────────
   wakeWordToggle.addEventListener('change', () => {
     if (wakeWordToggle.checked) {
+      if (!SpeechRecognition) {
+        wakeWordToggle.checked = false;
+        setStatus('Speech recognition not supported — use Chrome or Edge', 'error');
+        return;
+      }
       wakeActive = true;
-      // Rebuild recogniser so it starts fresh
-      wakeRecognition = _buildWakeRecognition();
-      _startWakeListener();
+      srMode     = 'standby';
+      clearTimeout(srRestartTimer);
+      sr = _buildSR();
+      try {
+        sr.start();
+        _setStandbyUI();
+      } catch (_) {
+        srRestartTimer = setTimeout(_restartSR, 500);
+      }
     } else {
-      _stopWakeListener();
+      wakeActive = false;
+      clearTimeout(srRestartTimer);
+      srRunning = false;
+      try { sr?.stop(); } catch (_) {}
+      sr     = null;
+      srMode = 'idle';
+      micBtn.classList.remove('wake-standby', 'wake-triggered');
+      isListening = false;
+      waveTarget  = 0;
+      setOrbState('');
+      setStatus('Click the orb to speak');
     }
   });
 
@@ -577,15 +738,11 @@
   });
 
   micBtn.addEventListener('click', () => {
-    if (!recognition) return;
-    if (isListening) {
-      recognition.stop();
+    if (!SpeechRecognition) return;
+    if (srMode === 'command' && isListening) {
+      _stopManualCommand();
     } else {
-      stopAudio();          // stop TTS before listening
-      // Pause wake listener while command runs (it resumes in recognition.onend)
-      try { wakeRecognition?.stop(); } catch (_) {}
-      micBtn.classList.remove('wake-standby');
-      try { recognition.start(); } catch (_) {}
+      _startManualCommand();
     }
   });
 

@@ -12,6 +12,7 @@ from tools.search import search_web
 from tools.calculator import calculator
 from tools.stock import get_stock_price
 from tools.youtube import youtube_search, youtube_play
+from tools.postgres import pg_query, pg_list_tables, pg_describe_table, pg_insert, pg_update
 
 
 # ---------------------------------------------------------------------------
@@ -35,4 +36,9 @@ TOOLS: list = [
     get_stock_price,
     youtube_search,
     youtube_play,
+    pg_query,
+    pg_list_tables,
+    pg_describe_table,
+    pg_insert,
+    pg_update,
 ]

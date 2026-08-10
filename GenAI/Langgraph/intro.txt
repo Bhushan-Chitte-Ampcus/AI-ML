@@ -392,8 +392,45 @@ MCP (Model Context Protocol) is an open standard (created by Anthropic) that let
 - Context Window: The context window is the amount of text an LLM can read and remember at one time before answering.
 - In-context Learning is an emergent ability that allows an LLM to use information and patterns present in the prompt itself, in addition to its trained parametric knowledge, to generate an answer.
 
+### Problems with Short Term Memory:
+- Short Term Memory is Fragile.
+- The context window problem.
+- STM is thread-scoped. (loss of user continuity across conversations, learning never compounds over time, cross-thread reasoning is impossible).
+
+### Solution:
+- Information that should survive.
+- It has to be selective.
+
+## Types of Long Term Memory:
+- Episodic Memory (what happened)
+- Semantic Memory (what is true)
+- Procedural Memory (how to do things)
+
+## How does Long Term Memory Work?
+- Creation: Is anything from what just happened worth remembering beyond this conversation.
+- Storage: Where and how do we keep this memory. 
+- Retrieval: Given the current situation, what should i remember right now. (Retrieval is selective, not exhaustive).
+- Injection: How does memory actually influence the model. (LTM -> Search -> STM -> Context -> LLM)
+
+## The Challenges: (LangMem, memo, supermemory)
+- Deciding what is worth remembering.
+- Retrieving the right memory at the right time.   
+- Orchestrating the entire system.
+
+## Context Overflow Problem:
+- The context overflow problem occurs when the total amount of information sent to an LLM exceeds its maximum context window. When this happens, the model cannot consider all the information, so some content must be removed or truncated.
+
+# Long Term Memory:
+
+    - LangGraph:
+        - Store
+            - BaseStore
+                - InMemoryStore
+                - PostgresStore
+                - RedisStore
 
 
 
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
