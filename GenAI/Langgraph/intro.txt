@@ -429,8 +429,13 @@ MCP (Model Context Protocol) is an open standard (created by Anthropic) that let
                 - PostgresStore
                 - RedisStore
 
-
-
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+# Normal RAG"
+- Query -> Embedding Model -> Vector DB -> Retrieved contexts => (Query + Retrieved contexts) LLM -> Response
 
+# Corrective RAG:
+- Corrective Retrieval-Augmented Generation (CRAG) is an advanced AI framework that adds a self-evaluation and correction layer between document retrieval and answer generation to fix weak or irrelevant context.
+
+## Iteration 1: Knowledge Refinement
+- Decompose -> Filter -> Recompose
