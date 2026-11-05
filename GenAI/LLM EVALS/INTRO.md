@@ -544,6 +544,407 @@ To evaluate live traffic reliably without degrading user-facing latency, applica
 | **Best For** | Quality gating, version comparison, CI/CD | Real-world quality, drift detection, user satisfaction |
 | **Cost & Speed** | Fast, cheap, repeatable | Ongoing operational cost; requires sampling to afford |
 
+---
+
+## Model Evaluations (Base Model Evals)
+
+Model evaluation is the systematic, empirical measurement of an underlying foundation model’s intrinsic capabilities, reasoning behavior, reliability, and operational characteristics under controlled, reproducible conditions.
+
+> **Analogy:** If application evaluation tests the entire vehicle (engine, brakes, steering, and GPS working together in traffic), **model evaluation tests the engine itself on a dynamometer** to benchmark raw horsepower, torque, and thermal limits before it is placed into a chassis.
+
+```
+ ┌────────────────────────────────────────────────────────────────────────┐
+ │                        THE 4-STAGE MODEL EVAL ARC                      │
+ │                                                                        │
+ │  1. DECIDE WHAT      2. ASSEMBLE TEST     3. EXECUTE FIXED     4. SCORE &      │
+ │     TO MEASURE    ──>   DATASETS       ──>   PROTOCOL       ──>   INTERPRET   │
+ │   • Reasoning         • Benchmarks         • Uniform prompts    • Accuracy    │
+ │   • Code / Math       • Custom tasks       • Fixed temp/seed    • Pass@k      │
+ │   • Safety / Tool     • Edge rubrics       • Identical runtime  • Error modes │
+ └────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+### 1. Why AI Engineers Need Model Evals
+
+Model evaluations provide the quantitative foundation for critical architectural and business decisions:
+
+- **Objective, Fair Comparison:** Cutting through vendor marketing and benchmark hype to evaluate candidate models (e.g., Claude 3.5 Sonnet vs. GPT-4o vs. Llama 3.3 70B) on standardized tasks.
+- **Tracking Iterative Progress:** Determining whether fine-tuning runs, new model weights, or quantized variants are legitimately improving performance or suffering from catastrophic forgetting.
+- **Release Gating & Alignment Safety:** Ensuring a model adheres to safety policies, avoids toxic or biased generations, and resists adversarial jailbreaks before downstream integration.
+- **Build vs. Buy Economics:** Determining whether a compact, open-weights model (e.g., Mistral 7B, Llama 8B, Qwen 2.5) fine-tuned for a specific domain can match or exceed expensive proprietary APIs at a fraction of the operating cost.
+
+---
+
+### 2. The 4-Stage Model Evaluation Arc
+
+Every disciplined model evaluation protocol follows a standardized lifecycle:
+
+1. **Decide What to Measure:**
+   Define the exact capability, behavioral boundary, or failure mode you intend to evaluate (e.g., multi-step mathematical deduction, zero-shot code generation, or JSON constraint adherence).
+2. **Assemble the Test Suite:**
+   Procure high-quality prompt-completion datasets. These can come from standardized academic benchmarks, synthetically generated probe sets, or curated domain-specific tasks.
+3. **Execute Under a Fixed Protocol:**
+   Run the model under rigid, controlled inference parameters (identical system prompts, fixed temperature, top-p, seed, context window, and few-shot formatting) so that variance stems solely from model intelligence, not prompt engineering artifacts.
+4. **Score, Interpret, and Diagnose:**
+   Convert model outputs into quantitative signals (e.g., accuracy, pass@k, exact match, semantic similarity, or LLM judge rubrics) and drill down into error distributions to identify systematic failure modes.
+
+---
+
+### 3. Public Benchmarks vs. Custom Eval Sets
+
+To evaluate a model effectively, teams leverage a balanced combination of public standardized benchmarks and bespoke in-house eval sets:
+
+| Dimension | Public Benchmarks (Standardized Exams) | Custom Eval Sets (In-House Tasks) |
+|---|---|---|
+| **Examples** | MMLU, GSM8K, SWE-bench, HumanEval | Curated company tickets, internal SQL queries, custom workflows |
+| **Purpose** | Broad cross-model comparison on shared, objective ground | Measuring performance on the exact task your product executes |
+| **Advantage** | Universal baseline; instantly communicates capabilities to the industry | High domain relevance; immune to public data contamination |
+| **Limitation** | High risk of training-set contamination; often unrepresentative of enterprise messy data | Time-consuming to author, curate, and maintain ground-truth labels |
+| **Best Used For** | Initial model shortlisting and broad architectural vetting | Final production model selection, fine-tuning validation, and CI/CD gating |
+
+---
+
+### 4. Core Model Capabilities Spectrum
+
+Foundation model evaluations systematically assess performance across eight core capability pillars:
+
+```
+┌──────────────────────────────────────────────────────────────────────────┐
+│                        CORE CAPABILITY SPECTRUM                          │
+├────────────────────────┬────────────────────────┬────────────────────────┤
+│ 1. Knowledge & Reason  │ 2. Code & Software     │ 3. Mathematics         │
+│    (MMLU, ARC, GPQA)   │    (HumanEval, SWE)    │    (GSM8K, MATH)       │
+├────────────────────────┼────────────────────────┼────────────────────────┤
+│ 4. Long Context & RAG  │ 5. Vision & Multimodal │ 6. Agentic & Tool Use  │
+│    (Needle / RULER)    │    (MMMU, DocVQA)      │    (ToolBench, BFCL)   │
+├────────────────────────┴────────────────────────┼────────────────────────┤
+│ 7. Safety, Alignment & Robustness               │ 8. Instruction Follow  │
+│    (RealToxicity, AdvGLUE)                      │    (IFEval)            │
+└─────────────────────────────────────────────────┴────────────────────────┘
+```
+
+1. **Knowledge & Multi-Step Reasoning:**
+   Measures factual recall, domain expertise (legal, medical, scientific), common-sense deduction, and complex chain-of-thought logic (e.g., *MMLU*, *GPQA*, *ARC*).
+2. **Coding & Software Engineering:**
+   Evaluates syntax correctness, algorithmic problem solving, code translation, bug fixing, and repository-level issue resolution (e.g., *HumanEval*, *SWE-bench*).
+3. **Mathematics & Quantitative Reasoning:**
+   Tests arithmetic precision, algebraic reasoning, multi-step word problems, and formal proof verification (e.g., *GSM8K*, *MATH*).
+4. **Long Context & Retrieval Integrity:**
+   Measures effective recall across massive context windows (32k to 1M+ tokens), verifying the model avoids "Lost in the Middle" degradation (e.g., *Needle In A Haystack (NIAH)*, *RULER*).
+5. **Vision & Multimodal Understanding:**
+   Assesses comprehension of charts, diagrams, scanned documents (OCR), spatial relationships, and interleaved image-text reasoning (e.g., *MMMU*, *ChartQA*, *DocVQA*).
+6. **Agentic Capabilities & Tool Use:**
+   Measures structured function calling, strict JSON schema compliance, multi-turn plan execution, environment state tracking, and recovery from tool execution errors (e.g., *Berkeley Function Calling Leaderboard (BFCL)*, *ToolBench*, *GAIA*).
+7. **Safety, Alignment & Robustness:**
+   Screens for toxicity, demographic bias, resistance to adversarial prompt injections and jailbreaks, and refusal calibration (refusing harmful requests without over-refusing benign ones).
+8. **Instruction Following & Controllability:**
+   Evaluates strict adherence to negative constraints ("never mention X"), exact formatting criteria ("return valid YAML only"), length limits, and role specifications (e.g., *IFEval*).
 
 
+### 5. Anatomy of a Benchmark (The 4 Building Blocks)
+
+A **benchmark** is a standardized, repeatable measurement instrument designed to evaluate an LLM's specific capabilities, reasoning boundaries, or operational qualities under controlled conditions.
+
+Just as a physical stress test requires a calibrated load, a standardized testing rig, a sensor, and a read-out gauge, every LLM benchmark consists of **four fundamental components**:
+
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                        ANATOMY OF A BENCHMARK                          │
+├────────────────────────────────┬───────────────────────────────────────┤
+│ 1. THE DATASET                 │ 2. THE RUN CONFIGURATION              │
+│    • Test prompts & queries    │    • Prompt strategy (Zero vs Few-shot)│
+│    • Ground-truth answer keys  │    • Reasoning mode (Direct vs CoT)   │
+│    • Domain splits & metadata  │    • Decoding (Temp, Top-p, Max tokens)│
+├────────────────────────────────┼───────────────────────────────────────┤
+│ 3. THE SCORING METHOD          │ 4. THE AGGREGATION                    │
+│    • Answer extraction & regex │    • Micro vs. Macro averaging        │
+│    • Equivalence & unit tests  │    • Pass@k, Exact Match, Accuracy    │
+│    • LLM-as-a-judge rubrics    │    • Confidence intervals & variance  │
+└────────────────────────────────┴───────────────────────────────────────┘
+```
+
+---
+
+#### Part 1: The Dataset (Questions + Answer Key)
+
+The dataset is the static test repository containing the challenge prompts and their corresponding reference standards:
+- **Input Items (Prompts/Questions):** The raw queries, code stubs, passages, or multi-turn conversational histories presented to the model.
+- **Ground-Truth Answer Key:** The authoritative standard used for comparison. Depending on the task, this can be:
+  - *Discrete targets:* An option identifier (`A`, `B`, `C`, `D`) or exact numeric value.
+  - *Reference text:* A human-authored summary, translation, or canonical code solution.
+  - *Verification artifacts:* Executable unit tests, assertions, or database schemas.
+- **Dataset Partitions & Metadata:** Splits categorized by domain (e.g., STEM, humanities, law), difficulty tier, token length, or language, enabling granular sub-discipline diagnosis.
+
+---
+
+#### Part 2: The Run Configuration (Inference Protocol)
+
+The run configuration specifies the exact environmental conditions, prompt formatting, and decoding parameters under which the model is executed. Because LLM performance is hypersensitive to prompt framing, standardizing this protocol is essential for fair comparisons:
+
+1. **Prompt Construction Strategy:**
+   - **Zero-Shot vs. Few-Shot (In-Context Exemplars):** 
+     - *Zero-shot:* Prompting the model without prior examples (tests raw generalization).
+     - *Few-shot ($k$-shot):* Prepending $k$ solved demonstration pairs before the target question (primes output formatting and disambiguates the task objective).
+   - **Direct vs. Chain-of-Thought (CoT) Prompting:**
+     - *Direct:* Forcing the model to output the candidate answer immediately without intermediate generation.
+     - *Chain-of-Thought (CoT):* Instructing the model to "think step-by-step" before providing the final answer, dramatically boosting multi-step logic and mathematical deduction.
+   - **Chat Templates & System Wrappers:** Standardizing message roles (`system`, `user`, `assistant`) and special tokens (e.g., `<|im_start|>`, `[INST]`) across different model families.
+
+2. **Decoding & Sampling Configuration:**
+   - **Temperature ($T$):** Typically set to $0$ (greedy decoding) during evaluations for maximum determinism and reproducibility. Stochastic evaluations ($T > 0$) require multiple sampled runs to compute statistical distributions.
+   - **Top-$p$ (Nucleus Sampling) & Top-$k$:** Probability thresholds limiting the token vocabulary candidate pool.
+   - **Maximum Completion Tokens (`max_tokens`):** Upper limit on generated tokens. If set too low, the model may truncate mid-reasoning, causing an automated extraction failure.
+   - **Stop Sequences:** Explicit strings (e.g., `\n\nQuestion:`, `</s>`) that halt generation to prevent runaway chatter.
+
+3. **Execution Environment & Tool Strategy:**
+   - **Single-Turn vs. Multi-Turn Interactive:** Whether the evaluation measures a single isolated query or multi-step back-and-forth dialogue.
+   - **Environment Access:** Whether the model has access to external execution runtimes (e.g., Python REPL, SQL sandboxes, bash shells, web search engines) to verify agentic problem-solving.
+
+---
+
+#### Part 3: The Scoring Method (From Text to Signal)
+
+Scoring is the objective mechanism that converts free-form, variable-length text generations into quantitative grades:
+
+1. **Answer Extraction (Post-Processing & Parsing):**
+   Raw model generations frequently include conversational preambles, reasoning traces, or formatting quirks (e.g., `"Sure! The correct answer is **B**."`). The evaluation harness must isolate the exact answer token:
+   - *Regex Parsing:* Matching explicit target patterns (e.g., `(?i)final answer:\s*([A-D])` or `\\boxed\{([^}]+)\}`).
+   - *Structured Parsing:* Extracting tagged fields from JSON, YAML, or XML containers (e.g., `<answer>42</answer>`).
+   - *Last-Line / Suffix Heuristics:* Extracting the final line or token of the output when no explicit tags exist.
+
+2. **Comparison & Verification Mechanisms:**
+   - **Exact Match (EM) with Normalization:** Verifying if the extracted token matches the reference after lowercase conversion, whitespace stripping, and punctuation removal.
+   - **Numerical Equivalence:** Parsing strings into floats and validating equivalence within an allowable tolerance $\epsilon$ (e.g., recognizing that `1/2`, `0.5`, and `50%` represent identical values).
+   - **Functional Execution Testing (Code):** Rather than comparing code strings, running the generated function against hidden unit test assertions to verify semantic correctness (e.g., HumanEval, SWE-bench).
+   - **Model-Based Verification (LLM-as-a-Judge):** Employing a frontier judge model guided by a rigorous multi-point rubric to evaluate qualities that cannot be checked by regex (e.g., clarity, coherence, helpfulness).
+
+---
+
+#### Part 4: Aggregation (From Instance Scores to Benchmark Metrics)
+
+Aggregation synthesizes instance-level outcomes across hundreds or thousands of test items into high-level performance indicators:
+
+- **Accuracy:** The percentage of correctly solved problems across the dataset ($\frac{\text{Correct}}{\text{Total}}$).
+- **Micro vs. Macro Averaging:**
+  - *Micro-Average:* Aggregates all test items equally into one global score.
+  - *Macro-Average:* Computes the mean score for each sub-category independently, then averages those category scores. This prevents dominant categories with larger question counts from skewing overall performance.
+- **Pass@k ($pass@1$, $pass@k$):** The probability that at least one of $k$ generated code samples passes all functional unit tests. Evaluated using the unbiased estimator:
+  $$\text{pass}@k = \mathbb{E}\left[ 1 - \frac{\binom{n - c}{k}}{\binom{n}{k}} \right]$$
+  *(where $n$ is total generated samples per task, and $c$ is the number of samples passing tests).*
+- **Statistical Significance & Variance:** Reporting standard error of the mean (SEM) or confidence intervals across multiple seeds to verify that score differences between models are statistically meaningful rather than noise.
+
+---
+
+### 6. The Model Evaluation Execution Loop
+
+Under the hood, every benchmark evaluation executes a sequential, iterative pipeline over the target dataset:
+
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                   THE BENCHMARK EVALUATION EXECUTION LOOP              │
+│                                                                        │
+│  [1. Ingest Item] ──> [2. Build Prompt] ──> [3. Call Model]           │
+│   Load Question &       Inject Exemplars     Execute API / Local vLLM  │
+│   Ground-Truth Ref      Apply Chat Template  Log latency & tokens      │
+│                                                       │                │
+│                                                       ▼                │
+│  [7. Store Result] <── [6. Grade / Judge] <── [5. Extract Answer] <──── [4. Capture Output]
+│   Persist Traces        Compare with Truth   Parse Target via Regex     Store Raw Payload
+│   Compute Aggregate     (Exact/Unit/Judge)   Strip Preamble & CoT       Token Logprobs
+└────────────────────────────────────────────────────────────────────────┘
+```
+
+1. **Load Item:** Fetch the input query, context documents, and ground-truth reference solution from the dataset.
+2. **Build Prompt:** Formulate the input string according to the benchmark's run specification (zero-shot, $k$-shot demonstrations, chain-of-thought directives, chat template wrappers).
+3. **Call Model:** Dispatch the prompt to the target model (via API or local inference engine such as vLLM / Ollama) under fixed sampling hyperparameters ($T=0$, seed, max tokens).
+4. **Capture Raw Output:** Record the raw completion text, token usage counts, time-to-first-token (TTFT), and total inference latency.
+5. **Extract Answer:** Post-process the completion to isolate the candidate answer from chain-of-thought reasoning, pleasantries, and conversational boilerplate.
+6. **Grade / Score:** Evaluate the candidate answer against the ground-truth key using the designated verification method (exact match, numerical tolerance, unit test execution, or LLM rubric).
+7. **Store & Aggregate:** Write the turn-level record to trace storage and update running cumulative metrics (accuracy, category macro-averages, failure rate).
+
+---
+
+### 7. Evaluation Harnesses (Standardized Testing Infrastructure)
+
+#### Why Naive Evaluation Scripts Fail
+Writing custom Python scripts to loop through prompts and parse responses quickly breaks down in practice:
+- Inconsistent prompt templating and disparate chat wrappers across model providers.
+- Lack of built-in rate-limiting, exponential backoff, and async concurrent batching.
+- Non-standardized answer extraction logic that skews score comparisons.
+- Security vulnerabilities when running untrusted model-generated code without containerized sandboxing.
+- Absence of response caching, leading to expensive, redundant API spend during re-runs.
+
+#### What is an Evaluation Harness?
+An **evaluation harness** is an engineering framework that provides standardized, end-to-end tooling to run benchmarks reliably, reproducibly, and at scale. It manages dataset downloading, prompt construction, model abstraction adapters, parallel inference, regex extraction, automated grading, and statistical reporting.
+
+#### Prominent Evaluation Harnesses
+
+| Harness | Primary Maintainer | Key Strengths | Best Used For |
+|---|---|---|---|
+| **`lm-evaluation-harness`** | EleutherAI | Industry standard; powers Hugging Face Open LLM Leaderboard; hundreds of pre-implemented academic tasks; native vLLM and HuggingFace integration | Evaluating open-weights and API base models on standardized academic benchmarks |
+| **`Inspect`** | UK AI Safety Institute | Modern, modular Python framework; built-in secure sandboxing; native support for multi-step agentic evaluations and tool use | Frontier capability evaluation, agentic workflows, and AI safety / red-teaming |
+| **`HELM`** | Stanford CRFM | Holistic evaluation across multiple dimensions: accuracy, robustness, calibration, bias, toxicity, and compute efficiency | Deep, multi-dimensional academic audits of model behavior and alignment |
+| **`Lighteval`** | Hugging Face | Lightweight, highly configurable evaluation toolkit optimized for large compute clusters and Leaderboard v2 | Fast, reproducible evaluation across massive model registries |
+| **`DeepEval` / `Promptfoo`** | Open Source / Enterprise | Developer-friendly CI/CD integration; assertions; automated LLM-as-a-judge pipelines; RAG assessment | Application-level regression testing, continuous integration, and prompt optimization |
+
+---
+
+### 8. Stakeholders in Model Evaluation (Who Evaluates & Why)
+
+Model evaluation is performed by distinct groups across the AI ecosystem, each driven by different operational priorities:
+
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                        EVALUATION STAKEHOLDERS                         │
+├────────────────────────┬───────────────────────┬───────────────────────┤
+│ 1. FRONTIER LABS       │ 2. THIRD-PARTY AUDIT  │ 3. ENTERPRISE TEAMS   │
+│    (Model Builders)    │    (Neutral Raters)   │    (App Engineers)    │
+├────────────────────────┼───────────────────────┼───────────────────────┤
+│ • Pre-training checks  │ • Impartial rankings  │ • Model selection     │
+│ • RLHF & alignment     │ • Contamination audit │ • Price / performance │
+│ • Safety red-teaming   │ • Chatbot Arena / Elo │ • Fine-tune gating    │
+└────────────────────────┴───────────────────────┴───────────────────────┘
+```
+
+1. **Frontier Research Labs (Model Builders):**
+   - *Examples:* OpenAI, Anthropic, Google DeepMind, Meta AI.
+   - *Objective:* Evaluate intermediate checkpoints during pre-training to detect capability jumps or loss spikes; validate post-training RLHF and instruction tuning; enforce strict safety and alignment red-teaming before releasing weights or APIs.
+
+2. **Third-Party & Independent Evaluators (Neutral Auditors):**
+   - *Examples:* LMSYS (Chatbot Arena), Stanford CRFM, UK/US AI Safety Institutes, Hugging Face.
+   - *Objective:* Provide unbiased, vendor-agnostic rankings; maintain contamination-resistant evaluations; gather blind human preference signals (Elo ratings) to cut through commercial marketing claims.
+
+3. **Enterprise AI Engineering Teams & Practitioners:**
+   - *Examples:* Engineering teams building production applications, agents, or internal tools.
+   - *Objective:* Identify the most cost-effective and latency-efficient model for their specific domain; validate whether a fine-tuned or quantized 8B model matches an expensive proprietary frontier API; prevent quality regressions when updating model providers or versions.
+
+---
+
+### 9. Why Benchmarks Can Be Misleading (Pitfalls & Flaws)
+
+Relying uncritically on public benchmark scorecards can lead to disastrous engineering decisions. Real-world capability often diverges dramatically from leaderboard numbers due to five systemic failure modes:
+
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                      BENCHMARK FAILURE MODES                           │
+├────────────────────────────────────────────────────────────────────────┤
+│ 1. CONTAMINATION      Data leakage: model memorizes test answers       │
+│ 2. SATURATION         Ceiling effect: all top models score >95%        │
+│ 3. CONFIG GAMING      Vendor tweaks prompt format / shots to inflate   │
+│ 4. AGGREGATION BIAS   Averages mask critical weaknesses in sub-domains │
+│ 5. GOODHART'S LAW     Optimizing for the benchmark degrades real tasks │
+└────────────────────────────────────────────────────────────────────────┘
+```
+
+#### 1. Benchmark Contamination (Data Snooping / Leakage)
+- **The Problem:** Modern foundation models are trained on internet-scale crawls spanning trillions of tokens. Public benchmark datasets (questions, answers, test cases) frequently appear in web dumps, GitHub repositories, and forums.
+- **The Impact:** The model is not performing genuine reasoning; it is **reciting memorized answers** seen during pre-training. A model scoring 90% on GSM8K may fail catastrophically if numbers, variables, or phrasing are slightly altered.
+- **Mitigation:** Canary GUID strings (e.g., BIG-bench canary keys) to filter out datasets from training corpora; dynamic, synthetically refreshed test sets; private hidden holdout splits.
+
+#### 2. Benchmark Saturation (The Ceiling Effect)
+- **The Problem:** Standard benchmarks eventually become too easy as model capabilities advance. When top-tier models all score 95%+ on benchmarks like MMLU or GSM8K, the benchmark loses its discriminatory resolution.
+- **The Impact:** Minor score differences (e.g., 96.1% vs. 96.4%) reflect random noise, parsing quirks, or ambiguous questions rather than genuine capability superiority.
+- **Mitigation:** Migrating to frontier-grade benchmarks that introduce extreme difficulty and multi-step complexity (e.g., *GPQA Diamond* for graduate-level science, *SWE-bench Verified* for software engineering, *MATH* or *FrontierMath*).
+
+#### 3. Configuration Gaming & Evaluation Discrepancies
+- **The Problem:** There is no universal standard for how benchmarks must be prompted. Scores swing wildly based on subtle variations in the run configuration:
+  - 0-shot vs. 5-shot prompts.
+  - Direct output vs. Chain-of-Thought (CoT) reasoning.
+  - Custom system prompts tailored specifically to the benchmark format.
+  - Greedy decoding vs. best-of-$N$ consensus sampling.
+- **The Impact:** Vendor marketing charts frequently compare their model's 5-shot CoT score against a competitor's 0-shot direct score, creating an artificial 10–20% illusion of superiority.
+
+#### 4. Flawed Aggregation & Metric Masking
+- **The Problem:** High-level summary metrics (like an overall MMLU score) average performance across 57 disparate subjects (from elementary mathematics to professional law).
+- **The Impact:** An impressive aggregate score of 85% can conceal fatal weaknesses in safety, code generation, or medical accuracy. Furthermore, micro-averaging can mask systematic failure on smaller, highly specialized domains.
+
+#### 5. Overfitting to Benchmarks (Goodhart’s Law)
+> *"When a measure becomes a target, it ceases to be a good measure."*
+- **The Problem:** When frontier labs optimize post-training RLHF specifically to win on high-profile leaderboards, models learn idiosyncratic benchmark formatting styles and answer heuristics.
+- **The Impact:** The model becomes brittle. While it achieves record-breaking benchmark numbers, it struggles in production when confronted with messy, unstructured, conversational, or ambiguous user queries.
+
+## LLM Benchmark:
+### 1. Knowledge
+   - MMLU
+      - Truthful
+      - AGI Eval
+      - Depth of Knowledge - GPQA Diamond
+      - MMLU PRO
+      - HLE - Humanity Last Exam
+
+#### TruthfulQA:
+- 817 adversarial questions probing whether models repeat common human misconceptions. launched sept 2021 - famous for finding that bigger models were often less truthful.
+
+#### AGI Eval:
+- Standardized human exams - SAT, LSAT, China Gaokao and civil services tests - repurposed to grade models against real human test-takers.
+
+#### GPQA:
+- Google proof exam
+- Testing the depth of knowledge
+
+#### MMLU-PRO:
+#### SimpleQA:
+#### HLE:
+
+
+## LLM Leaderboards:
+- An LLM leaderboard is a public ranking or comparison table that shows how different LLMs perform on a common set of evaluations.
+
+### Why leaderboards exist:
+- compare models across labs with a common reference.
+- guide model selection when you don't have resources to run evals yourself.
+- detect saturation 
+- to discover new models
+
+### Types of LLM Leaderboards:
+- Benchmark-specific leaderboards: these rank models using the results of one particular benchmark
+- Multi-benchmark leaderboards: these leaderboards compare models across multiple benchmark and evaluation dimensions instead of relying on one test. they may measure capabilities such as: knowledge, reasoning, mathematics, coding, instruction-following, data analysis 
+- Human-preference-based leaderboards:
+these rank models using human votes
+- Application-specific-leaderboards: these evaluate models on a particular real-world task or application.
+
+### Why can't you always trust LLM leaderboards:
+- Benchmark performance may not transfer to real applications: benchmark questions are usually clean, well-defined and self-contained. real application involves: ambiguous requests, missing information, company-specific data, multiple conversation turns, tool failures, unusual edge cases.
+- Benchmark contamination can inflate scores: many benchmark questions are publicaly available through papers, repo, tutorials and websites. the model may then answer correctly because it has already seen the question, rather than because it can independently solve it.
+- Models can be over-optimised for the leaderboard: once a leaderboard becomes influential, developers begin optimising specifically for it. they may repeatedly: submit a model, study its weak areas, modify the model, prompt or agent.
+- Overall rankings depend on subjective design choices: multi-benchmark leaderboards must decide: which benchmark to include, which capabilities to exclude, how scores are normalised, how much weight each benchmark receives, whether cost and latency should affect ranking.
+- Small score differences may not be meaningful: leaderboards often show exact ranks even when the difference between models is tiny. this difference may be caused by: prompt variations, a small test set, evaluation noise, automatic-grading errors.
+- Human-preference leaderboards have human biases: human voting is valuable for measuring helpfulness, tone and writing quality, but people may prefer answers that are: longer, more confident, better formatted, more agrreable, more entertaining.
+- The scores may be stale, incomplete or self-reported: a leaderboard may contain: results from older model versions, missing newly released models, discontinued models, self-reported results that were not independently verified.
+
+### How to read LLM leaderboards as an AI Engineer:
+- write your requirements down before opening any board: task type, latency budget, cost ceiling, context needs, deployment constraints.
+- pick the board that matches your task, not the famous one: agents:swe bench pro, tool use: BFCL, chat: the matching LMArena sub-arena, RAG: MTEB, budget-constrained: a board carrying price and throughput.
+- read the board correctly: e.g. what exactly is scored, who ran the model, at what inference compute, how old is the eval set, is it saturated, where are the confidence intervals, if composite - what are the weights
+- cut to 3-5 candidates: apply the hard filters first - license, price ceilling, latency, availability in your region.
+- Run your own eval. this is where the decision happens: fifty to a few hundred examples from your real traffic beats any public benchmarks. score on quality, cost, latency and failure behaviour.
+
+## How to run custom model evals:
+
+### 1. Requirements:
+- Task
+- Cost
+- Latency
+- Context
+- Deployment
+- Correctness
+
+### 2. Leaderboards:
+- LLM-stats leaderboard
+
+#### Steps for Custom model evals:
+- 1. The dataset
+- 2. Filter and load the database
+- 3. Extract the schema
+- 4. Build the golden dataset
+- 5. Validate the golden dataset
+- 6. Store the golden dataset in csv format
+- 7. Check the flow
+- 8. Pick candidate models
+- 9. Build the evaluator
+- 10. Build the orchestrator
+- 11. Run all the models
+- 12. Make the decision
 
